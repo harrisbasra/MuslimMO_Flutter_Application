@@ -1,17 +1,50 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:test/pages/log_in.dart';
 
-class SignIn extends StatefulWidget{
-  const SignIn({super.key});
+class SelectHording extends StatefulWidget{
+  const SelectHording({super.key});
 
   @override
-  State<SignIn> createState() => SignInState();
+  State<SelectHording> createState() => SelectHordingState();
 }
 
-class SignInState extends State<SignIn> {
+class SelectHordingState extends State<SelectHording> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/board.png',),
+            fit: BoxFit.fill,
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 20,),
+              Image.asset('assets/images/logoBeta.png',
+                //width: MediaQuery.of(context).size.width,
+                fit: BoxFit.fitWidth,
+              ),
+              const Expanded(child: SizedBox(height: 20,)),
+              InkWell(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=> const LoginPage()));
+                  },
+                  child: Image.asset("assets/images/logB1.png", height: 40, fit: BoxFit.fitHeight,)
+              ),
+              const SizedBox(height: 25,),
+              Image.asset("assets/images/logB2.png", height: 40, fit: BoxFit.fitHeight,),
+              const Expanded(child: SizedBox(height: 20,)),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 

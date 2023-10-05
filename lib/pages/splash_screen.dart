@@ -21,11 +21,24 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return AnimatedSplashScreen.withScreenFunction(
-      splash: Center(
-        child: Image.asset('assets/images/img.png'),
+      splash: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/board.png',),
+            fit: BoxFit.fill,
+          ),
+        ),
+        child: Center(
+            child: Image.asset('assets/images/logo.png',
+              width: MediaQuery.of(context).size.width*0.7,
+              fit: BoxFit.fitWidth,
+            )
+        ),
       ),
       screenFunction: () async {
-        return const SignIn();
+        return const SelectHording();
       },
       duration: 1700,
       splashIconSize: 10000.0,
