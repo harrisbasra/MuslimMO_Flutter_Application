@@ -55,19 +55,19 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyChSUzO6PZNgCsCcO_L3247vReOADB_jwE',
-    appId: '1:603248941877:android:3e89ac763243f200088a7c',
+    apiKey: 'AIzaSyDFIP0nJuC2XNohlvNKq_Jliy6c8djRSMQ',
+    appId: '1:862979522815:android:f789e0f4bc784ce9cd4cca',
     messagingSenderId: '603248941877',
-    projectId: 'muslim-marraige-online',
-    storageBucket: 'muslim-marraige-online.appspot.com',
+    projectId: 'muslimmatt-270d5',
+    storageBucket: 'muslimmatt-270d5.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBy9jRR4kF6gn4dLgxHXc2IS-6bvxCqEFg',
-    appId: '1:603248941877:ios:729fa8a9f749a006088a7c',
+    apiKey: 'AIzaSyDFIP0nJuC2XNohlvNKq_Jliy6c8djRSMQ',
+    appId: '1:862979522815:ios:f789e0f4bc784ce9cd4cca',
     messagingSenderId: '603248941877',
-    projectId: 'muslim-marraige-online',
-    storageBucket: 'muslim-marraige-online.appspot.com',
+    projectId: 'muslimmatt-270d5',
+    storageBucket: 'muslimmatt-270d5.appspot.com',
     iosClientId: '603248941877-kna3fsu407ta54cqgh0baho11n6dntgb.apps.googleusercontent.com',
     iosBundleId: 'com.muslimmarraige.online',
   );

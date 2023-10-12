@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:test/pages/log_in.dart';
+import 'package:test/pages/sign_up.dart';
 
 class SelectHording extends StatefulWidget{
   const SelectHording({super.key});
@@ -12,6 +13,9 @@ class SelectHording extends StatefulWidget{
 class SelectHordingState extends State<SelectHording> {
   @override
   Widget build(BuildContext context) {
+
+
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -33,12 +37,16 @@ class SelectHordingState extends State<SelectHording> {
               const Expanded(child: SizedBox(height: 20,)),
               InkWell(
                   onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=> const LoginPage()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginPage()));
                   },
                   child: Image.asset("assets/images/logB1.png", height: 40, fit: BoxFit.fitHeight,)
               ),
               const SizedBox(height: 25,),
-              Image.asset("assets/images/logB2.png", height: 40, fit: BoxFit.fitHeight,),
+              InkWell(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=> const SignUp(email: "",)));
+                  },
+                  child: Image.asset("assets/images/logB2.png", height: 40, fit: BoxFit.fitHeight,)),
               const Expanded(child: SizedBox(height: 20,)),
             ],
           ),
