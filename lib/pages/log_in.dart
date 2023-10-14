@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:test/pages/buffer_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:test/pages/set_prefrences.dart';
 
 import 'package:test/pages/sign_up.dart';
 
@@ -74,6 +76,8 @@ class _LoginPageState extends State<LoginPage> {
           final DocumentSnapshot userDoc = snapshot.docs[0];
           final String storedPassword = userDoc['password'];
 
+          print("Document ID: " + userDoc.id);
+
           // Check if the entered password matches the stored password
           if (password == storedPassword) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -82,6 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                 duration: Duration(seconds: 3), // Adjust the duration as needed
               ),
             );
+            Navigator.push(context, MaterialPageRoute(builder: (context)=> SetPreferences(docID: userDoc.id)));
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(

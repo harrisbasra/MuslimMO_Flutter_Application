@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:test/pages/buffer_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:test/pages/sign_in.dart';
 
 class SignUp extends StatefulWidget {
@@ -16,17 +17,25 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
 
 
+  final emailRegex = RegExp(
+    r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)*(\.[a-z]{2,4})$',
+  );
+
+
   Country selectedCountry = Country(
       phoneCode: "92",
-      countryCode: "PK",
+      countryCode: "KO",
       e164Sc: 0,
       geographic: true,
       level: 1,
-      name: "Pakistan",
+      name: "Select your Country",
       example: "Pakistan",
       displayName: "Pakistan",
       displayNameNoCountryCode: "PAK",
       e164Key: "");
+
+  bool isDropdownVisible = true;
+  String selectedcountry = "Pakistan";
 
 
   final String email; // Add a field to store the email
@@ -75,25 +84,28 @@ class _SignUpState extends State<SignUp> {
   }
 
   void saveUserDataToFirestore() async {
-    if(fullNameController.text.isEmpty||emailController.text.isEmpty||confirmEmailController.text.isEmpty||passController.text.isEmpty||phoneControllerA.text.isEmpty||phoneControllerB.text.isEmpty){
+    if (fullNameController.text.isEmpty ||
+        emailController.text.isEmpty ||
+        confirmEmailController.text.isEmpty ||
+        passController.text.isEmpty ||
+        phoneControllerB.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Fill All Text Fields First'),
-          duration: Duration(seconds: 3), // Adjust the duration as needed
+          duration: Duration(seconds: 3),
         ),
       );
-
       return;
     }
+
     // Check if terms and conditions are checked
     if (!isChecked) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Agree to Terms & Conditions'),
-          duration: Duration(seconds: 3), // Adjust the duration as needed
+          duration: Duration(seconds: 3),
         ),
       );
-
       return;
     }
 
@@ -101,11 +113,36 @@ class _SignUpState extends State<SignUp> {
     if (passController.text != confirmEmailController.text) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Emails do not match'),
-          duration: Duration(seconds: 3), // Adjust the duration as needed
+          content: Text('Passwords do not match'),
+          duration: Duration(seconds: 3),
         ),
       );
+      return;
+    }
 
+    if (!emailRegex.hasMatch(emailController.text)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Invalid email format'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+      return;
+    }
+
+    // Check if the email already exists in Firestore
+    final query = await _firestore
+        .collection('users')
+        .where('email', isEqualTo: emailController.text)
+        .get();
+
+    if (query.docs.isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Email already exists'),
+          duration: Duration(seconds: 3),
+        ),
+      );
       return;
     }
 
@@ -114,9 +151,13 @@ class _SignUpState extends State<SignUp> {
       'username': fullNameController.text,
       'email': emailController.text,
       'password': passController.text,
-      'gender': isMaleSelected ? 'Male' : isFemaleSelected ? 'Female' : 'Non-Binary',
+      'gender': isMaleSelected
+          ? 'Male'
+          : isFemaleSelected
+          ? 'Female'
+          : 'Non-Binary',
       'phone_number': '+${phoneControllerA.text}${phoneControllerB.text}',
-      'country': selectedCountry,
+      'country': selectedCountry.name,
       'birth_date': '${selectedDate}/${selectedMonth}/${yearController.text}',
       'reason_for_registering': selectedReason,
       'heard_about_us': selectedHear,
@@ -125,7 +166,7 @@ class _SignUpState extends State<SignUp> {
     // Save the document to Firestore
     try {
       await _firestore.collection('users').add(userDocument);
-        Navigator.push(context, MaterialPageRoute(builder: (context)=> const SelectHording()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const SelectHording()));
       // Document successfully saved, you can show a success message or navigate to another screen.
     } catch (e) {
       // Handle any errors that occur during the saving process.
@@ -273,7 +314,7 @@ class _SignUpState extends State<SignUp> {
                   obscureText: true,
                   cursorColor: Color.fromRGBO(255, 0, 239, 1.0),
 
-                  obscuringCharacter: "*",
+                  obscuringCharacter: "x",
 
                   controller: passController, // Assign the controller
                   decoration: InputDecoration(
@@ -320,7 +361,7 @@ class _SignUpState extends State<SignUp> {
                 child: TextFormField(
                   cursorColor: Color.fromRGBO(255, 0, 239, 1.0),
                   obscureText: true,
-                  obscuringCharacter: "*",
+                  obscuringCharacter: "x",
                   controller: confirmEmailController, // Assign the controller
                   decoration: InputDecoration(
                     hintText: 'Retype your Password',
@@ -469,7 +510,7 @@ class _SignUpState extends State<SignUp> {
                       }).toList(),
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.keyboard_arrow_down_sharp, color: Colors.grey.shade400, size: 30,),
-                        focusedBorder: UnderlineInputBorder(
+                        focusedBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(color: Color.fromRGBO(255, 0, 239, 1.0)),
                         ),
                       ),
@@ -510,19 +551,66 @@ class _SignUpState extends State<SignUp> {
                 ),
               ),
               const SizedBox(height: 14,),
-              Container(
-                  width: 120, // Adjust the width of the dropdown as needed
-                  height: 45,
-
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.black,
+              Visibility(
+                visible: false,
+                child: InkWell(
+                  onTap: (){
+                    setState(() {
+                      isDropdownVisible = false; // Hide the dropdown after selection
+                    });
+                  },
+                  child: DropdownButtonFormField<String>(
+                    menuMaxHeight: 220,
+                    icon: Image.asset("assets/icons/img.png", width: 20, height: 20),
+                    iconSize: 18,
+                    value: null, // Assign the selected value
+                    onChanged: (newValue) {
+                      setState(() {
+                        selectedcountry = newValue!;
+                        isDropdownVisible = false; // Hide the dropdown after selection
+                      });
+                    },
+                    decoration: InputDecoration(
+                      hintText: 'Select your country',
+                      hintStyle: TextStyle(
+                        color: Colors.grey.shade400,
                       ),
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(800)
+                      fillColor: Colors.white,
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: const BorderSide(
+                          color: Color.fromRGBO(255, 0, 239, 1.0),
+                          width: 1.0,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: const BorderSide(
+                          color: Color.fromRGBO(255, 0, 239, 1.0),
+                          width: 1.0,
+                        ),
+                      ),
+                    ),
+                    items: null,
                   ),
+                ),
+              ),
 
-                  child:Center(
+              // Container that appears when the dropdown is hidden
+              Visibility(
+                visible: true,
+                child: Container(
+                  width: 120,
+                  height: 45,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black,
+                    ),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(800),
+                  ),
+                  child: Center(
                     child: InkWell(
                       onTap: (){
                         showCountryPicker(
@@ -538,68 +626,33 @@ class _SignUpState extends State<SignUp> {
                       },
                       child: Row(
                         children: [
-                          Expanded(child: SizedBox(width: 10,),),
+                          SizedBox(width: 10),
                           Expanded(
                             child: Text(
-                              "${selectedCountry.flagEmoji} + ${selectedCountry.phoneCode}",
-                              style: const TextStyle(
-                                fontSize: 20,
+                              "${selectedCountry.flagEmoji} ${selectedCountry.name}",
+                              style: selectedCountry.name == "Select your Country"
+                                  ? TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey.shade400, // Change color to grey
+                                fontWeight: FontWeight.w600,
+                              )
+                                  : const TextStyle(
+                                fontSize: 12,
                                 color: Colors.black,
                                 fontWeight: FontWeight.w600,
                               ),
-                            ),
+                            )
+
                           ),
-                          Expanded(child: SizedBox(width: 10,),),
-                          Image.asset("assets/icons/img.png", width: 20, height: 20,),
-                          SizedBox(width: 15,),
+                          const Expanded(child: SizedBox(width: 10)),
+                          Image.asset("assets/icons/img.png", width: 20, height: 20),
+                          SizedBox(width: 15),
                         ],
                       ),
                     ),
-                  )
+                  ),
+                ),
               ),
-
-              // DropdownButtonFormField<String>(
-              //   menuMaxHeight: 220,
-              //
-              //   icon: Image.asset("assets/icons/img.png", width: 20, height: 20,),
-              //   iconSize: 18,
-              //   value: null,
-              //   onChanged: (newValue) {
-              //     setState(() {
-              //       selectedCountry = newValue!;
-              //     });
-              //   },
-              //   decoration: InputDecoration(
-              //     hintText: 'Select your country',
-              //     hintStyle: TextStyle(
-              //         color: Colors.grey.shade400
-              //     ),
-              //     fillColor: Colors.white,
-              //     filled: true,
-              //     border: OutlineInputBorder(
-              //       borderRadius: BorderRadius.circular(10),
-              //       borderSide: const BorderSide(
-              //         color: Color.fromRGBO(255, 0, 239, 1.0),
-              //         width: 1.0,
-              //       ),
-              //     ),
-              //     focusedBorder: OutlineInputBorder(
-              //       borderRadius: BorderRadius.circular(10),
-              //       borderSide: const BorderSide(
-              //         color: Color.fromRGBO(255, 0, 239, 1.0),
-              //         width: 1.0,
-              //       ),
-              //     ),
-              //   ),
-              //   items: allCountries.map((String value) {
-              //     return DropdownMenuItem<String>(
-              //       value: value,
-              //       child: Text(value, style: TextStyle(
-              //           color: Colors.black
-              //       ),),
-              //     );
-              //   }).toList(),
-              // ),
               const SizedBox(height: 20,),
               const Align(
                 alignment: AlignmentDirectional.centerStart,
@@ -656,7 +709,7 @@ class _SignUpState extends State<SignUp> {
                       items: <String>['1', '2', '3', '4', '5', '6','7','8','9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23','24','25','26','27','28','29','30','31'].map((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
-                          child: Text(value, style: TextStyle(
+                          child: Text(value, style: const TextStyle(
                               color: Colors.black
                           ),),
                         );
@@ -703,7 +756,7 @@ class _SignUpState extends State<SignUp> {
                       items: <String>['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map((String value) {
                   return DropdownMenuItem<String>(
                   value: value,
-                  child: Text(value, style: TextStyle(
+                  child: Text(value, style: const TextStyle(
                       color: Colors.black
                   ),),
                   );
@@ -715,7 +768,7 @@ class _SignUpState extends State<SignUp> {
                   Expanded(
                     flex: 1,
                     child:  TextFormField(
-                      cursorColor:  Color.fromRGBO(255, 0, 239, 1.0),
+                      cursorColor:  const Color.fromRGBO(255, 0, 239, 1.0),
 
                       keyboardType: TextInputType.number,
                       controller: yearController, // Assign the controller
@@ -761,7 +814,10 @@ class _SignUpState extends State<SignUp> {
               ),
               const SizedBox(height: 14,),
               DropdownButtonFormField<String>(
-                icon: Image.asset("assets/icons/img.png", width: 20, height: 20,),
+                icon: Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Image.asset("assets/icons/img.png", width: 20, height: 20,),
+                ),
                 iconSize: 18,
 
                 value: null,
@@ -801,7 +857,7 @@ class _SignUpState extends State<SignUp> {
                 ].map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
-                    child: Text(value, style: TextStyle(fontSize: 14, color: Colors.black
+                    child: Text(value, style: const TextStyle(fontSize: 14, color: Colors.black
                     ),),
                   );
                 }).toList(),
@@ -864,7 +920,7 @@ class _SignUpState extends State<SignUp> {
                 ].map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
-                    child: Text(value, style: TextStyle(fontSize: 14,color: Colors.black),),
+                    child: Text(value, style: const TextStyle(fontSize: 14,color: Colors.black),),
                   );
                 }).toList(),
               ),
@@ -881,7 +937,7 @@ class _SignUpState extends State<SignUp> {
                       height: 0,
                     ),
                   ),
-                  Expanded(child: SizedBox(width: 10,),),
+                  const Expanded(child: SizedBox(width: 10,),),
                   const Text(
                     'Terms and Conditions',
                     style: TextStyle(
@@ -895,14 +951,14 @@ class _SignUpState extends State<SignUp> {
                   const SizedBox(width: 8,),
                   Checkbox(
                     value: isChecked, // Use the variable to set the checkbox value
-                    activeColor: Color.fromRGBO(255, 0, 239, 1.0),
+                    activeColor: const Color.fromRGBO(255, 0, 239, 1.0),
                     onChanged: (newValue) {
                       setState(() {
                         isChecked = newValue!;
                       });
                     },
 
-                    focusColor: Color.fromRGBO(255, 0, 239, 1.0),
+                    focusColor: const Color.fromRGBO(255, 0, 239, 1.0),
                     hoverColor: Color.fromRGBO(255, 0, 239, 1.0),
                     checkColor: Colors.white,
                   ),
@@ -945,10 +1001,9 @@ class _SignUpState extends State<SignUp> {
               ),
               const SizedBox(height: 20),
               InkWell(
-                // onTap: (){
-                //   final String email = emailController.text;
-                //   Navigator.push(context, MaterialPageRoute(builder: (context)=> BufferPage()));
-                // },
+                onTap: (){
+                  signup(context);
+                },
                 child: Image.asset(
                   'assets/icons/img_1.png',
                   height: 30,
@@ -1024,9 +1079,37 @@ class _SignUpState extends State<SignUp> {
 
   @override
   void initState() {
-    confirmEmailController.text = email;
     emailController.text = email;
   }
+
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
+  Future<void> signup(BuildContext context) async {
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+    final GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
+    if (googleSignInAccount != null) {
+      final GoogleSignInAuthentication googleSignInAuthentication =
+      await googleSignInAccount.authentication;
+      final AuthCredential authCredential = GoogleAuthProvider.credential(
+          idToken: googleSignInAuthentication.idToken,
+          accessToken: googleSignInAuthentication.accessToken);
+
+      // Getting users credential
+      UserCredential result = await auth.signInWithCredential(authCredential);
+      User? user = result.user;
+      String? em ;
+      if(user?.email!=null){
+        em = user?.email;
+      }
+
+      if (result != null) {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => SignUp(email: em.toString())));
+      } // if result not null we simply call the MaterialpageRoute,
+      // for go to the HomePage screen
+    }
+  }
+
 
   List<String> allCountries = [
     'Afghanistan',
