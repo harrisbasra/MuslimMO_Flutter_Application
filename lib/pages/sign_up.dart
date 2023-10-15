@@ -3,6 +3,7 @@ import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:test/pages/set_prefrences.dart';
 import 'package:test/pages/sign_in.dart';
 
 class SignUp extends StatefulWidget {
@@ -165,8 +166,8 @@ class _SignUpState extends State<SignUp> {
 
     // Save the document to Firestore
     try {
-      await _firestore.collection('users').add(userDocument);
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const SelectHording()));
+      final DocumentReference docRef = await _firestore.collection('users').add(userDocument);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => SetPreferences(docID: docRef.id.toString())));
       // Document successfully saved, you can show a success message or navigate to another screen.
     } catch (e) {
       // Handle any errors that occur during the saving process.

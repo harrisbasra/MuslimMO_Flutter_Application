@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:test/pages/log_in.dart';
+import 'package:test/pages/set_prefrences.dart';
 import 'package:test/pages/sign_up.dart';
 
 class SelectHording extends StatefulWidget{
@@ -30,9 +31,14 @@ class SelectHordingState extends State<SelectHording> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 20,),
-              Image.asset('assets/images/logoBeta.png',
-                //width: MediaQuery.of(context).size.width,
-                fit: BoxFit.fitWidth,
+              InkWell(
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=> SetPreferences(docID: "N6CKyZTuCeb8dvQ0h1wk")));
+                },
+                child: Image.asset('assets/images/logoBeta.png',
+                  //width: MediaQuery.of(context).size.width,
+                  fit: BoxFit.fitWidth,
+                ),
               ),
               const Expanded(child: SizedBox(height: 20,)),
               InkWell(

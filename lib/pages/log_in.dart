@@ -76,7 +76,7 @@ class _LoginPageState extends State<LoginPage> {
           final DocumentSnapshot userDoc = snapshot.docs[0];
           final String storedPassword = userDoc['password'];
 
-          print("Document ID: " + userDoc.id);
+//          print("Document ID: " + userDoc.id);
 
           // Check if the entered password matches the stored password
           if (password == storedPassword) {
@@ -86,7 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                 duration: Duration(seconds: 3), // Adjust the duration as needed
               ),
             );
-            Navigator.push(context, MaterialPageRoute(builder: (context)=> SetPreferences(docID: userDoc.id)));
+            //Navigator.push(context, MaterialPageRoute(builder: (context)=> SetPreferences(docID: userDoc.id)));
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
