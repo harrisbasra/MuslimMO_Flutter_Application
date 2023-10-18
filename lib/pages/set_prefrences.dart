@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:test/pages/show_profile.dart';
+import 'package:test/pages/sign_in.dart';
 
 class SetPreferences extends StatefulWidget {
   final String docID;
@@ -40,6 +42,12 @@ class SetPreferencesState extends State<SetPreferences> {
   final TextEditingController disabilityController = TextEditingController();
 
   final TextEditingController revertController = TextEditingController();
+
+
+  final TextEditingController partnerEducation = TextEditingController();
+  final TextEditingController partnerProfession = TextEditingController();
+  final TextEditingController partnerTypeController = TextEditingController();
+
 
 
   bool isMaleSelected = true; // Male radio button value
@@ -81,6 +89,78 @@ class SetPreferencesState extends State<SetPreferences> {
   String? sectController;
   String? halalController;
 
+  String? partnerLocation;
+  String? partnerReligion;
+  String? partnerSect;
+
+  List<String> imageUrls = [];
+  List<String> allCountries = [
+    "Doesn't Matter",
+    'Afghanistan',
+    'Albania',
+    'Algeria',
+    'Andorra',
+    'Angola',
+    'Argentina',
+    'Australia',
+    'Austria',
+    'Bahrain',
+    'Bangladesh',
+    'Belgium',
+    'Brazil',
+    'Canada',
+    'Chile',
+    'China',
+    'Colombia',
+    'Czech Republic',
+    'Denmark',
+    'Egypt',
+    'Estonia',
+    'Finland',
+    'France',
+    'Germany',
+    'Greece',
+    'Hungary',
+    'India',
+    'Indonesia',
+    'Ireland',
+    'Israel',
+    'Italy',
+    'Japan',
+    'Kenya',
+    'Kuwait',
+    'Lebanon',
+    'Malaysia',
+    'Mexico',
+    'Netherlands',
+    'New Zealand',
+    'Nigeria',
+    'Norway',
+    'Pakistan',
+    'Peru',
+    'Philippines',
+    'Poland',
+    'Portugal',
+    'Qatar',
+    'Romania',
+    'Russia',
+    'Saudi Arabia',
+    'Singapore',
+    'South Africa',
+    'South Korea',
+    'Spain',
+    'Sweden',
+    'Switzerland',
+    'Taiwan',
+    'Thailand',
+    'Turkey',
+    'Ukraine',
+    'United Arab Emirates',
+    'United Kingdom',
+    'United States',
+    'Vietnam',
+    'Zimbabwe',
+  ];
 
   late XFile? selectedImage = null;
 
@@ -90,7 +170,7 @@ class SetPreferencesState extends State<SetPreferences> {
     final firebaseStorage = FirebaseStorage.instance;
     final storage = firebaseStorage.ref();
 
-    List<String> imageUrls = []; // Create an empty list to store download URLs
+     // Create an empty list to store download URLs
 
     if (selectedImage != null) {
       final profileImageRef = storage.child('profile_images/${selectedImage?.name}).jpg');
@@ -138,11 +218,75 @@ class SetPreferencesState extends State<SetPreferences> {
     }
   }
 
+  void informPreferences() {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+    // Create a map with the information you want to update
+    Map<String, dynamic> data = {
+      'headline': headlineController.text,
+      'bio': bioController.text,
+      'education': educationController.text,
+      'profession': professionController.text,
+      'job': jobController.text,
+      'tongue': tongueController.text,
+      'slang': slangController.text,
+      'citizenship': citizenshipController.text,
+      'income': incomeController.text,
+      'relocate': relocateController.text,
+      'children': childrenController.text,
+      'height': heightController.text,
+      'hair': hairController.text,
+      'eyes': eyesController.text,
+      'disability': disabilityController.text,
+      'revert': revertController.text,
+      'partnerEducation': partnerEducation.text,
+      'partnerProfession': partnerProfession.text,
+      'partnerType': partnerTypeController.text,
+      'gender': isMaleSelected ? 'Male' : isFemaleSelected ? 'Female' : 'Non-Binary',
+      'children': yesChildren ? 'Yes' : noChildren ? 'No' : 'Maybe',
+      'hijab': yesHijab ? 'Yes' : noHijab ? 'No' : 'Occasionally',
+      'beard': yesBeard ? 'Yes' : noBeard ? 'No' : 'Trendy',
+      'salah': yesSalah ? 'Yes' : noSalah ? 'No' : 'Occasionally',
+      'zakat': yesZakat ? 'Yes' : noZakat ? 'No' : 'Some',
+      'ramadan': yesRamadan ? 'Yes' : noRamadan ? 'No' : 'A Few',
+      'maritalStatus': maritalStatus,
+      'maritalTime': maritalTime,
+      'livingArrange': livingArrange,
+      'smokeFreq': smokeFreq,
+      'buildCont': buildCont,
+      'religion': religionController,
+      'sect': sectController,
+      'halal': halalController,
+      'partnerLocation': partnerLocation,
+      'partnerReligion': partnerReligion,
+      'partnerSect': partnerSect,
+      'imageUrls': imageUrls,
+    };
+
+    users.doc(docID).update(data).then((value) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Preferences Saved Successfully'),
+          duration: Duration(seconds: 3), // Adjust the duration as needed
+        ),
+      );
+      //Navigator.push(context, MaterialPageRoute(builder: (context) => ShowProfile(docID: docID)));
+    }).catchError((error) {
+      print("LOL ERROR 1: "+error);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Connect to Internet'),
+          duration: Duration(seconds: 3), // Adjust the duration as needed
+        ),
+      );
+    });
+    Navigator.push(context, MaterialPageRoute(builder: (context)=> const SelectHording()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -166,17 +310,28 @@ class SetPreferencesState extends State<SetPreferences> {
                   pickImage(); // Open image picker
                 },
                 child: selectedImage == null
-                    ? Image.asset(
-                  'assets/images/user.png',
-                  width: 180,
-                  height: 180,
-                  fit: BoxFit.contain,
-                )
-                    : Image.file(
-                  File(selectedImage!.path),
-                  width: 180,
-                  height: 180,
-                  fit: BoxFit.contain,
+                    ? Container(
+                      width: 150,
+                      height: 150,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle
+                      ),
+                      child: ClipOval(
+                          child: Image.asset(
+                            'assets/images/user.png',
+                            width: 7.5,
+                            height: 350,
+                            fit: BoxFit.contain, // Use 'cover' to ensure it covers the circle
+                          ),
+                  ),
+                    )
+                    : ClipOval(
+                        child: Image.file(
+                          File(selectedImage!.path),
+                          width: 7.5,
+                          height: 320,
+                          fit: BoxFit.cover, // Use 'cover' to ensure it covers the circle
+                        ),
                 ),
               ),
               const SizedBox(height: 12,),
@@ -187,7 +342,7 @@ class SetPreferencesState extends State<SetPreferences> {
                     color: Colors.black,
                     fontSize: 25,
                     fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.bold,
                     height: 0,
                   ),
                 ),
@@ -221,7 +376,7 @@ class SetPreferencesState extends State<SetPreferences> {
                             color: Colors.black,
                             fontSize: 24,
                             fontFamily: 'Inter',
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.bold,
                             height: 0,
                           ),
                         ),
@@ -290,7 +445,7 @@ class SetPreferencesState extends State<SetPreferences> {
                           const Align(
                             alignment: AlignmentDirectional.centerStart,
                             child: Text(
-                              'About me',
+                              'About Me',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 20,
@@ -720,7 +875,7 @@ class SetPreferencesState extends State<SetPreferences> {
                             color: Colors.black,
                             fontSize: 24,
                             fontFamily: 'Inter',
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.bold,
                             height: 0,
                           ),
                         ),
@@ -862,7 +1017,7 @@ class SetPreferencesState extends State<SetPreferences> {
                                 iconSize: 18,
                                 value: maritalStatus, // Assign the selected value
                                 onChanged: (newValue) {
-
+                                  maritalStatus = newValue;
                                 },
                                 decoration: InputDecoration(
                                   fillColor: Colors.white,
@@ -887,7 +1042,8 @@ class SetPreferencesState extends State<SetPreferences> {
                                   return DropdownMenuItem<String>(
                                     value: value,
                                     child: Text(value, style: const TextStyle(
-                                        color: Colors.black
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w400
                                     ),),
                                   );
                                 }).toList(),
@@ -923,7 +1079,7 @@ class SetPreferencesState extends State<SetPreferences> {
                               iconSize: 18,
                               value: maritalTime, // Assign the selected value
                               onChanged: (newValue) {
-
+                                maritalTime = newValue;
                               },
                               decoration: InputDecoration(
                                 fillColor: Colors.white,
@@ -948,7 +1104,8 @@ class SetPreferencesState extends State<SetPreferences> {
                                   return DropdownMenuItem<String>(
                                     value: value,
                                     child: Text(value, style: const TextStyle(
-                                        color: Colors.black
+                                        color: Colors.black,
+                                      fontWeight: FontWeight.w400
                                     ),),
                                   );
                                 }).toList(),
@@ -1175,7 +1332,7 @@ class SetPreferencesState extends State<SetPreferences> {
                               iconSize: 18,
                               value: livingArrange, // Assign the selected value
                               onChanged: (newValue) {
-
+                                livingArrange = newValue;
                               },
                               decoration: InputDecoration(
                                 fillColor: Colors.white,
@@ -1243,7 +1400,7 @@ class SetPreferencesState extends State<SetPreferences> {
                             color: Colors.black,
                             fontSize: 24,
                             fontFamily: 'Inter',
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.bold,
                             height: 0,
                           ),
                         ),
@@ -1327,7 +1484,7 @@ class SetPreferencesState extends State<SetPreferences> {
                                 iconSize: 18,
                                 value: buildCont, // Assign the selected value
                                 onChanged: (newValue) {
-
+                                  buildCont = newValue;
                                 },
                                 decoration: InputDecoration(
                                   fillColor: Colors.white,
@@ -1352,7 +1509,8 @@ class SetPreferencesState extends State<SetPreferences> {
                                   return DropdownMenuItem<String>(
                                     value: value,
                                     child: Text(value, style: const TextStyle(
-                                        color: Colors.black
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w400
                                     ),),
                                   );
                                 }).toList(),
@@ -1472,7 +1630,7 @@ class SetPreferencesState extends State<SetPreferences> {
                           const Align(
                             alignment: AlignmentDirectional.centerStart,
                             child: Text(
-                              'Do I Smoke',
+                              'Do I Smoke?',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 14,
@@ -1492,7 +1650,7 @@ class SetPreferencesState extends State<SetPreferences> {
                                 iconSize: 18,
                                 value: smokeFreq, // Assign the selected value
                                 onChanged: (newValue) {
-
+                                  smokeFreq = newValue;
                                 },
                                 decoration: InputDecoration(
                                   fillColor: Colors.white,
@@ -1517,7 +1675,9 @@ class SetPreferencesState extends State<SetPreferences> {
                                   return DropdownMenuItem<String>(
                                     value: value,
                                     child: Text(value, style: const TextStyle(
-                                        color: Colors.black
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w400
+
                                     ),),
                                   );
                                 }).toList(),
@@ -1534,7 +1694,7 @@ class SetPreferencesState extends State<SetPreferences> {
                           const Align(
                             alignment: AlignmentDirectional.centerStart,
                             child: Text(
-                              'Disabilities',
+                              'Disabilities?',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 14,
@@ -1615,7 +1775,7 @@ class SetPreferencesState extends State<SetPreferences> {
                             color: Colors.black,
                             fontSize: 24,
                             fontFamily: 'Inter',
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.bold,
                             height: 0,
                           ),
                         ),
@@ -1647,7 +1807,7 @@ class SetPreferencesState extends State<SetPreferences> {
                                 iconSize: 18,
                                 value: religionController, // Assign the selected value
                                 onChanged: (newValue) {
-
+                                  religionController = newValue;
                                 },
                                 decoration: InputDecoration(
                                   fillColor: Colors.white,
@@ -1672,7 +1832,9 @@ class SetPreferencesState extends State<SetPreferences> {
                                   return DropdownMenuItem<String>(
                                     value: value,
                                     child: Text(value, style: const TextStyle(
-                                        color: Colors.black
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w400
+
                                     ),),
                                   );
                                 }).toList(),
@@ -1708,7 +1870,7 @@ class SetPreferencesState extends State<SetPreferences> {
                                 iconSize: 18,
                                 value: sectController, // Assign the selected value
                                 onChanged: (newValue) {
-
+                                  sectController = newValue;
                                 },
                                 decoration: InputDecoration(
                                   fillColor: Colors.white,
@@ -1733,7 +1895,9 @@ class SetPreferencesState extends State<SetPreferences> {
                                   return DropdownMenuItem<String>(
                                     value: value,
                                     child: Text(value, style: const TextStyle(
-                                        color: Colors.black
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w400
+
                                     ),),
                                   );
                                 }).toList(),
@@ -1920,7 +2084,7 @@ class SetPreferencesState extends State<SetPreferences> {
                           const Align(
                             alignment: AlignmentDirectional.centerStart,
                             child: Text(
-                              'Are you a revert?',
+                              'Are you a Revert?',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 15,
@@ -1996,7 +2160,7 @@ class SetPreferencesState extends State<SetPreferences> {
                                 iconSize: 18,
                                 value: halalController, // Assign the selected value
                                 onChanged: (newValue) {
-
+                                    halalController = newValue;
                                 },
                                 decoration: InputDecoration(
                                   fillColor: Colors.white,
@@ -2017,11 +2181,13 @@ class SetPreferencesState extends State<SetPreferences> {
                                   ),
                                   contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                                 ),
-                                items: <String>["No", "Yes", "Special Occassion", "Sometimes"].map((String value) {
+                                items: <String>["Yes", "No", "Sometimes"].map((String value) {
                                   return DropdownMenuItem<String>(
                                     value: value,
                                     child: Text(value, style: const TextStyle(
-                                        color: Colors.black
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w400
+
                                     ),),
                                   );
                                 }).toList(),
@@ -2206,7 +2372,7 @@ class SetPreferencesState extends State<SetPreferences> {
                       const Align(
                         alignment: AlignmentDirectional.centerStart,
                         child: Text(
-                          'Do you Fast in Ramadan?',
+                          'Do you Fast in the month of Ramadan?',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 18,
@@ -2295,7 +2461,7 @@ class SetPreferencesState extends State<SetPreferences> {
               ),  // Container 4
               const SizedBox(height: 12,),
               Container(
-                height: 100,
+                //height: 100,
                 decoration: ShapeDecoration(
                   color: Colors.white,
                   shape: RoundedRectangleBorder(
@@ -2310,6 +2476,393 @@ class SetPreferencesState extends State<SetPreferences> {
                       spreadRadius: 0,
                     )
                   ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 14,),
+                      const Center(
+                        child: Text(
+                          'Type of Partner Your Looking for',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.bold,
+                            height: 0,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 18,),
+                      Row(
+                        //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          const Align(
+                            alignment: AlignmentDirectional.centerStart,
+                            child: Text(
+                              'Partner Location',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w400,
+                                height: 0,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 4,),
+                          Expanded(
+                            child: SizedBox(
+                              height: 48,
+                              child: DropdownButtonFormField<String>(
+                                menuMaxHeight: 220,
+                                icon: Image.asset("assets/icons/img.png", width: 20, height: 20),
+                                iconSize: 18,
+                                value: partnerLocation, // Assign the selected value
+                                onChanged: (newValue) {
+                                  partnerLocation = newValue;
+                                },
+                                decoration: InputDecoration(
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(800),
+                                    borderSide: const BorderSide(
+                                      color: Color.fromRGBO(255, 0, 239, 1.0),
+                                      width: 1.0,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(800),
+                                    borderSide: const BorderSide(
+                                      color: Color.fromRGBO(255, 0, 239, 1.0),
+                                      width: 1.0,
+                                    ),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                                ),
+                                items: allCountries.map((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value, style: const TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w400
+
+                                    ),),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 18,),
+                      Row(
+                        //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          const Align(
+                            alignment: AlignmentDirectional.centerStart,
+                            child: Text(
+                              'Partner Religion',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w400,
+                                height: 0,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 4,),
+                          Expanded(
+                            child: SizedBox(
+                              height: 48,
+                              child: DropdownButtonFormField<String>(
+                                menuMaxHeight: 220,
+                                icon: Image.asset("assets/icons/img.png", width: 20, height: 20),
+                                iconSize: 18,
+                                value: partnerReligion, // Assign the selected value
+                                onChanged: (newValue) {
+                                  partnerReligion = newValue;
+                                },
+                                decoration: InputDecoration(
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(800),
+                                    borderSide: const BorderSide(
+                                      color: Color.fromRGBO(255, 0, 239, 1.0),
+                                      width: 1.0,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(800),
+                                    borderSide: const BorderSide(
+                                      color: Color.fromRGBO(255, 0, 239, 1.0),
+                                      width: 1.0,
+                                    ),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                                ),
+                                items: <String>["Doesn't Matter", "Hindu", "Muslim", "Christian"].map((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value, style: const TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w400
+
+                                    ),),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 18,),
+                      Row(
+                        //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          const Align(
+                            alignment: AlignmentDirectional.centerStart,
+                            child: Text(
+                              'Partner Sect',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w400,
+                                height: 0,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 22,),
+                          Expanded(
+                            child: SizedBox(
+                              height: 48,
+                              child: DropdownButtonFormField<String>(
+                                menuMaxHeight: 220,
+                                icon: Image.asset("assets/icons/img.png", width: 20, height: 20),
+                                iconSize: 18,
+                                value: partnerSect, // Assign the selected value
+                                onChanged: (newValue) {
+                                  partnerSect = newValue;
+                                },
+                                decoration: InputDecoration(
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(800),
+                                    borderSide: const BorderSide(
+                                      color: Color.fromRGBO(255, 0, 239, 1.0),
+                                      width: 1.0,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(800),
+                                    borderSide: const BorderSide(
+                                      color: Color.fromRGBO(255, 0, 239, 1.0),
+                                      width: 1.0,
+                                    ),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                                ),
+                                items: <String>["Doesn't Matter", "Only Muslim", "Shia", "Suni"].map((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value, style: const TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w400
+
+                                    ),),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 18,),
+                      Row(
+                        //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          const Align(
+                            alignment: AlignmentDirectional.centerStart,
+                            child: Text(
+                              'Partner Education',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w400,
+                                height: 0,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12,),
+                          Expanded(
+                            child: SizedBox(
+                              height: 48,
+                              child: TextField(
+                                controller: partnerEducation,
+                                cursorColor: const Color.fromRGBO(255, 0, 239, 1.0),
+                                keyboardType: TextInputType.emailAddress,
+                                decoration: InputDecoration(
+                                  hintStyle: TextStyle(
+                                    color: Colors.grey.shade400,
+                                  ),
+                                  fillColor: Colors.white,
+                                  contentPadding: null,
+                                  filled: true,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(800),
+                                    borderSide: const BorderSide(
+                                      color: Color.fromRGBO(255, 0, 239, 1.0),
+                                      width: 1.0,
+                                    ),
+                                  ),
+                                  hoverColor: Color.fromRGBO(255, 0, 239, 1.0),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(800),
+                                    borderSide: const BorderSide(
+                                      color: Color.fromRGBO(255, 0, 239, 1.0),
+                                      width: 1.0,
+                                    ),
+                                  ),
+                                  isDense: true,
+                                  alignLabelWithHint: true,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 18,),
+                      Row(
+                        children: [
+                          const Align(
+                            alignment: AlignmentDirectional.centerStart,
+                            child: Text(
+                              'Partner Profession',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w400,
+                                height: 0,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10,),
+                          Expanded(
+                            child: SizedBox(
+                              height: 48,
+                              child: TextField(
+                                controller: partnerProfession,
+                                //maxLines: 8,
+                                cursorColor: const Color.fromRGBO(255, 0, 239, 1.0),
+                                keyboardType: TextInputType.emailAddress,
+                                decoration: InputDecoration(
+                                  hintStyle: TextStyle(
+                                    color: Colors.grey.shade400,
+                                  ),
+                                  fillColor: Colors.white,
+                                  contentPadding: null,
+                                  filled: true,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(800),
+                                    borderSide: const BorderSide(
+                                      color: Color.fromRGBO(255, 0, 239, 1.0),
+                                      width: 1.0,
+                                    ),
+                                  ),
+                                  hoverColor: const Color.fromRGBO(255, 0, 239, 1.0),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(800),
+                                    borderSide: const BorderSide(
+                                      color: Color.fromRGBO(255, 0, 239, 1.0),
+                                      width: 1.0,
+                                    ),
+                                  ),
+                                  isDense: true,
+                                  alignLabelWithHint: true,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 18,),
+                      const Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: Text(
+                          'Describe Type of Partner',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w400,
+                            height: 0,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 18,),
+                      Row(
+                        //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Align(
+                            alignment: AlignmentDirectional.centerStart,
+                            child: Text(
+                              '                             ',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w400,
+                                height: 0,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: SizedBox(
+                              //height: 48,
+                              child: TextField(
+                                controller: partnerTypeController,
+                                maxLines: 8,
+                                cursorColor: const Color.fromRGBO(255, 0, 239, 1.0),
+                                keyboardType: TextInputType.emailAddress,
+                                decoration: InputDecoration(
+                                  fillColor: Colors.white,
+                                  contentPadding: null,
+                                  filled: true,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(14),
+                                    borderSide: const BorderSide(
+                                      color: Color.fromRGBO(255, 0, 239, 1.0),
+                                      width: 1.0,
+                                    ),
+                                  ),
+                                  hoverColor: Color.fromRGBO(255, 0, 239, 1.0),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(14),
+                                    borderSide: const BorderSide(
+                                      color: Color.fromRGBO(255, 0, 239, 1.0),
+                                      width: 1.0,
+                                    ),
+                                  ),
+                                  isDense: true,
+                                  alignLabelWithHint: true,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 22,),
+                    ],
+                  ),
                 ),
               ),  // Container 5
               const SizedBox(height: 18,),
@@ -2387,8 +2940,10 @@ class SetPreferencesState extends State<SetPreferences> {
               InkWell(
                   onTap: (){
                     uploadImagesToFirebase(docID);
+                    informPreferences();
                   },
-                  child: Image.asset("assets/images/create.png", width: 122, height: 42,)),
+                  child: Image.asset("assets/images/create.png", width: 122, height: 42,)
+              ),
               const SizedBox(height: 45,),
             ],
           ),

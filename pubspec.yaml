@@ -19,6 +19,7 @@ dependencies:
   shared_preferences: ^2.2.0
   firebase_auth: ^4.10.1
   image_picker: ^0.8.4+2
+  intl: ^0.17.0
   google_sign_in: ^6.1.5
 
 

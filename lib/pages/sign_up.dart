@@ -162,6 +162,8 @@ class _SignUpState extends State<SignUp> {
       'birth_date': '${selectedDate}/${selectedMonth}/${yearController.text}',
       'reason_for_registering': selectedReason,
       'heard_about_us': selectedHear,
+      'profession' : "Not Set",
+      'imageUrls' : ['https://firebasestorage.googleapis.com/v0/b/muslimmatt-270d5.appspot.com/o/profile_images%2Fimage_2023-10-19_000724079.png?alt=media&token=0111fcb2-b173-4a64-9ef6-70dee846d447&_gl=1*1tk9lym*_ga*MTc0MTQzMTkwLjE2OTI4MjAwNTA.*_ga_CW55HF8NVT*MTY5NzY1NjAzMC4zMy4xLjE2OTc2NTYwNzAuMjAuMC4w']
     };
 
     // Save the document to Firestore
@@ -315,7 +317,7 @@ class _SignUpState extends State<SignUp> {
                   obscureText: true,
                   cursorColor: Color.fromRGBO(255, 0, 239, 1.0),
 
-                  obscuringCharacter: "x",
+                  obscuringCharacter: "●",
 
                   controller: passController, // Assign the controller
                   decoration: InputDecoration(
@@ -362,7 +364,7 @@ class _SignUpState extends State<SignUp> {
                 child: TextFormField(
                   cursorColor: Color.fromRGBO(255, 0, 239, 1.0),
                   obscureText: true,
-                  obscuringCharacter: "x",
+                  obscuringCharacter: "●",
                   controller: confirmEmailController, // Assign the controller
                   decoration: InputDecoration(
                     hintText: 'Retype your Password',

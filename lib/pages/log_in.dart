@@ -11,6 +11,8 @@ import 'package:test/pages/set_prefrences.dart';
 
 import 'package:test/pages/sign_up.dart';
 
+import 'main_land.dart';
+
 
 class LoginPage extends StatefulWidget {
 
@@ -27,10 +29,8 @@ class _LoginPageState extends State<LoginPage> {
 
     bool pass = false;
 
-// function to implement the google signin
-
-// creating firebase instance
     final FirebaseAuth auth = FirebaseAuth.instance;
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     Future<void> signup(BuildContext context) async {
       final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -45,18 +45,34 @@ class _LoginPageState extends State<LoginPage> {
         // Getting users credential
         UserCredential result = await auth.signInWithCredential(authCredential);
         User? user = result.user;
-        String? em ;
-        if(user?.email!=null){
+        String? em;
+        if (user?.email != null) {
           em = user?.email;
-        }
+          String checkEmail = em.toString();
 
-        if (result != null) {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => SignUp(email: em.toString())));
-        } // if result not null we simply call the MaterialpageRoute,
-        // for go to the HomePage screen
+          // Query Firestore to check if the email exists in any document
+          QuerySnapshot querySnapshot = await firestore
+              .collection('users') // Replace with your Firestore collection name
+              .where('email', isEqualTo: checkEmail)
+              .get();
+
+          if (querySnapshot.docs.isNotEmpty) {
+            // Email exists in Firestore, you can print the document IDs
+            for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => MainLand(docID: doc.id)));
+            }
+          } else {
+            // Email doesn't exist in Firestore, show a snackbar to sign up
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Signup first.'),
+              ),
+            );
+          }
+        }
       }
     }
+
 
 
 
@@ -86,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
                 duration: Duration(seconds: 3), // Adjust the duration as needed
               ),
             );
-            //Navigator.push(context, MaterialPageRoute(builder: (context)=> SetPreferences(docID: userDoc.id)));
+            Navigator.push(context, MaterialPageRoute(builder: (context)=> MainLand(docID: userDoc.id)));
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
@@ -172,7 +188,7 @@ class _LoginPageState extends State<LoginPage> {
             Container(
               height: 48,
               child: TextFormField(
-                cursorColor: Color.fromRGBO(255, 0, 239, 1.0),
+                cursorColor: const Color.fromRGBO(255, 0, 239, 1.0),
 
                 controller: emailController,
                 keyboardType: TextInputType.emailAddress,
@@ -221,7 +237,7 @@ class _LoginPageState extends State<LoginPage> {
                 cursorColor: Color.fromRGBO(255, 0, 239, 1.0),
                 //obscureText: !pass,
                 obscureText: true,
-                obscuringCharacter: "*",
+                obscuringCharacter: "●",
                 controller: passwordController,
                 decoration: InputDecoration(
                   // suffixIcon: InkWell(
