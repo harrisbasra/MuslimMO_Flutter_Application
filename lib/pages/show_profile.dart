@@ -80,7 +80,7 @@ class ShowProfileState extends State<ShowProfile> {
           partnerEducation = userData['partnerEducation'];
           partnerProfession = userData['partnerProfession'];
           imageUrl = List<String>.from(userData['imageUrls']);
-          print("LOL:$imageUrl");
+          //print("LOL:$imageUrl");
         } else {
           print('Document does not exist.');
         }

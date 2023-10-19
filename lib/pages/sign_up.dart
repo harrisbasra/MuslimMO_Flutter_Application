@@ -2,9 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:test/pages/set_prefrences.dart';
 import 'package:test/pages/sign_in.dart';
+
+import 'main_land.dart';
 
 class SignUp extends StatefulWidget {
   final String email; // Add an email parameter to the constructo\r
@@ -176,6 +179,48 @@ class _SignUpState extends State<SignUp> {
       print('Error saving user data: $e');
       // You can display an error message here.
     }
+  }
+
+
+  String FBEmail = "";
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+
+  Future<UserCredential> signInWithFacebook() async {
+    // Trigger the sign-in flow
+    final LoginResult loginResult = await FacebookAuth.instance.login(
+        permissions: ['email']
+    );
+
+    // Create a credential from the access token
+    final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.token);
+
+    final ud = await FacebookAuth.instance.getUserData();
+
+    FBEmail = ud['email'];
+
+    QuerySnapshot querySnapshot = await firestore
+        .collection('users')
+        .where('email', isEqualTo: FBEmail)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      // Email exists in Firestore, you can print the document IDs
+      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => MainLand(docID: doc.id)));
+      }
+    } else {
+      // Email doesn't exist in Firestore, show a snackbar to sign up
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Signup first.'),
+        ),
+      );
+      Navigator.push(context, MaterialPageRoute(builder: (context)=> SignUp(email: FBEmail)));
+    }
+
+    // Once signed in, return the UserCredential
+    return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
   }
 
 
@@ -1015,10 +1060,9 @@ class _SignUpState extends State<SignUp> {
               ),
               const SizedBox(height: 15),
               InkWell(
-                // onTap: (){
-                //   final String email = emailController.text;
-                //   Navigator.push(context, MaterialPageRoute(builder: (context)=> BufferPage()));
-                // },
+                onTap: (){
+                  signInWithFacebook();
+                },
                 child: Image.asset(
                   'assets/icons/img_2.png',
                   height: 30,

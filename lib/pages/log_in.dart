@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:test/pages/buffer_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -31,6 +32,8 @@ class _LoginPageState extends State<LoginPage> {
 
     final FirebaseAuth auth = FirebaseAuth.instance;
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    String FBEmail;
 
     Future<void> signup(BuildContext context) async {
       final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -73,7 +76,42 @@ class _LoginPageState extends State<LoginPage> {
       }
     }
 
+    Future<UserCredential> signInWithFacebook() async {
+      // Trigger the sign-in flow
+      final LoginResult loginResult = await FacebookAuth.instance.login(
+        permissions: ['email']
+      );
 
+      // Create a credential from the access token
+      final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.token);
+
+      final ud = await FacebookAuth.instance.getUserData();
+
+      FBEmail = ud['email'];
+
+      QuerySnapshot querySnapshot = await firestore
+          .collection('users') // Replace with your Firestore collection name
+          .where('email', isEqualTo: FBEmail)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        // Email exists in Firestore, you can print the document IDs
+        for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => MainLand(docID: doc.id)));
+        }
+      } else {
+        // Email doesn't exist in Firestore, show a snackbar to sign up
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Signup first.'),
+          ),
+        );
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> SignUp(email: FBEmail)));
+      }
+
+      // Once signed in, return the UserCredential
+      return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+    }
 
 
     Future<void> loginWithEmailAndPassword(String email, String password) async {
@@ -304,10 +342,11 @@ class _LoginPageState extends State<LoginPage> {
             ),
             const SizedBox(height: 15),
             InkWell(
-              // onTap: (){
-              //   final String email = emailController.text;
-              //   Navigator.push(context, MaterialPageRoute(builder: (context)=> BufferPage()));
-              // },
+              onTap: (){
+                signInWithFacebook();
+                // final String email = emailController.text;
+                // Navigator.push(context, MaterialPageRoute(builder: (context)=> BufferPage()));
+              },
               child: Image.asset(
                 'assets/images/fLB.png',
                 height: 30,

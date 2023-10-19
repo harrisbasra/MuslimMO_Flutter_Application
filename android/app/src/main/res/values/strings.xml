@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Muslim Matrimonial App</string>
+    <string name="facebook_app_id">1522440821855125</string>
+    <string name="fb_login_protocol_scheme">fb1522440821855125575</string>
+    <string name="facebook_client_token">8e5f94a1f846c212f174c09c38e7183f</string>
+</resources>

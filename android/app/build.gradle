@@ -44,7 +44,7 @@ android {
 
     defaultConfig {
         applicationId "com.muslimmarraige.online"
-        minSdkVersion 23
+        minSdkVersion 21
         targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
