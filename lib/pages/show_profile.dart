@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:test/pages/edit_prefrences.dart';
 
 class ShowProfile extends StatefulWidget {
   final String docID;
+  final bool CP;
+  final String name;
 
-  const ShowProfile({Key? key, required this.docID}) : super(key: key);
+  const ShowProfile({Key? key, required this.docID, required this.name, required this.CP}) : super(key: key);
 
   @override
   ShowProfileState createState() => ShowProfileState(docID: docID);
@@ -13,6 +16,8 @@ class ShowProfile extends StatefulWidget {
 class ShowProfileState extends State<ShowProfile> {
   String docID;
   ShowProfileState({Key? key, required this.docID});
+
+  String username = "";
 
 
   String religion = "";
@@ -78,6 +83,7 @@ class ShowProfileState extends State<ShowProfile> {
           partnerReligion = userData['partnerReligion'];
           partnerCast = userData['partnerSect'];
           partnerEducation = userData['partnerEducation'];
+          username = userData['username'];
           partnerProfession = userData['partnerProfession'];
           imageUrl = List<String>.from(userData['imageUrls']);
           //print("LOL:$imageUrl");
@@ -140,15 +146,21 @@ class ShowProfileState extends State<ShowProfile> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const SizedBox(height: 14,),
-                    const Text(
-                      'Profile',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 26,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.bold,
-                        height: 0,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Profile',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 26,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.bold,
+                            height: 0,
+                          ),
+                        ),
+                        Image.asset("assets/icons/img_6.png", width: 80, fit: BoxFit.fitWidth,)
+                      ],
                     ),
                     const SizedBox(height: 20,),
                     Container(
@@ -162,6 +174,19 @@ class ShowProfileState extends State<ShowProfile> {
                             imageUrl[0],
                           ),
                           fit: BoxFit.fitHeight,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 18,),
+                    Center(
+                      child: Text(
+                        widget.name,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 30,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.bold,
+                          height: 0,
                         ),
                       ),
                     ),
@@ -416,7 +441,7 @@ class ShowProfileState extends State<ShowProfile> {
                                     const SizedBox(height: 28,),
 
                                     Text(
-                                      education,
+                                      education.length>10?education.replaceRange(10, education.length, ".."):education,
                                       style: const TextStyle(
                                         color: Colors.black,
                                         fontSize: 18,
@@ -428,7 +453,7 @@ class ShowProfileState extends State<ShowProfile> {
                                     const SizedBox(height: 28,),
 
                                     Text(
-                                      job,
+                                      job.length>10?job.replaceRange(10, job.length, ".."):job,
                                       style: const TextStyle(
                                         color: Colors.black,
                                         fontSize: 18,
@@ -440,7 +465,7 @@ class ShowProfileState extends State<ShowProfile> {
                                     const SizedBox(height: 28,),
 
                                     Text(
-                                      salary,
+                                      salary.length>10?salary.replaceRange(10, salary.length, ".."):salary,
                                       style: const TextStyle(
                                         color: Colors.black,
                                         fontSize: 18,
@@ -664,8 +689,23 @@ class ShowProfileState extends State<ShowProfile> {
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
+                                    Container(
+                                      child: Text(
+                                        hairColor.length>10?hairColor.replaceRange(10, hairColor.length, ".."):hairColor,
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 18,
+                                          fontFamily: 'Inter',
+                                          fontWeight: FontWeight.w400,
+                                          height: 0.10,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 28,),
+
                                     Text(
-                                      hairColor,
+                                      height.length>10?height.replaceRange(10, height.length, ".."):height,
+
                                       style: const TextStyle(
                                         color: Colors.black,
                                         fontSize: 18,
@@ -677,7 +717,8 @@ class ShowProfileState extends State<ShowProfile> {
                                     const SizedBox(height: 28,),
 
                                     Text(
-                                      height,
+                                      bodyBuild.length>10?bodyBuild.replaceRange(10, bodyBuild.length, ".."):bodyBuild,
+
                                       style: const TextStyle(
                                         color: Colors.black,
                                         fontSize: 18,
@@ -689,7 +730,7 @@ class ShowProfileState extends State<ShowProfile> {
                                     const SizedBox(height: 28,),
 
                                     Text(
-                                      bodyBuild,
+                                      eyesColor.length>10?eyesColor.replaceRange(10, eyesColor.length, ".."):eyesColor,
                                       style: const TextStyle(
                                         color: Colors.black,
                                         fontSize: 18,
@@ -701,7 +742,7 @@ class ShowProfileState extends State<ShowProfile> {
                                     const SizedBox(height: 28,),
 
                                     Text(
-                                      eyesColor,
+                                      preferHijab.length>10?preferHijab.replaceRange(10, preferHijab.length, ".."):preferHijab,
                                       style: const TextStyle(
                                         color: Colors.black,
                                         fontSize: 18,
@@ -713,19 +754,8 @@ class ShowProfileState extends State<ShowProfile> {
                                     const SizedBox(height: 28,),
 
                                     Text(
-                                      preferHijab,
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 18,
-                                        fontFamily: 'Inter',
-                                        fontWeight: FontWeight.w400,
-                                        height: 0.10,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 28,),
+                                      anyDisability.length>10?anyDisability.replaceRange(10, anyDisability.length, ".."):anyDisability,
 
-                                    Text(
-                                      anyDisability,
                                       style: const TextStyle(
                                         color: Colors.black,
                                         fontSize: 18,
@@ -740,7 +770,7 @@ class ShowProfileState extends State<ShowProfile> {
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 30,),
+                            const SizedBox(height: 4,),
                           ],
                         ),
                       ),
@@ -943,7 +973,7 @@ class ShowProfileState extends State<ShowProfile> {
                                     const SizedBox(height: 28,),
 
                                     Text(
-                                      partnerEducation,
+                                      partnerEducation.length>10?partnerEducation.replaceRange(10, partnerEducation.length, ".."):partnerEducation,
                                       style: const TextStyle(
                                         color: Colors.black,
                                         fontSize: 18,
@@ -955,7 +985,7 @@ class ShowProfileState extends State<ShowProfile> {
                                     const SizedBox(height: 28,),
 
                                     Text(
-                                      partnerProfession,
+                                      partnerProfession.length>10?partnerProfession.replaceRange(10, partnerProfession.length, ".."):partnerProfession,
                                       style: const TextStyle(
                                         color: Colors.black,
                                         fontSize: 18,
@@ -969,7 +999,7 @@ class ShowProfileState extends State<ShowProfile> {
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 30,),
+                            const SizedBox(height: 4,),
                           ],
                         ),
                       ),
@@ -999,6 +1029,16 @@ class ShowProfileState extends State<ShowProfile> {
             onPressed: () {
               // Add your bell icon functionality here
             },
+          ),
+          if(widget.CP==true)
+          InkWell(
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> EditPreferences(docID: docID)));
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(right: 10.0),
+                child: const Icon(Icons.edit),
+              )
           ),
         ],
         flexibleSpace: Container(
