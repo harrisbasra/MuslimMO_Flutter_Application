@@ -339,7 +339,6 @@ class MainLandState extends State<MainLand> {
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w500,
-
                                 ),
                               ),
                             ),

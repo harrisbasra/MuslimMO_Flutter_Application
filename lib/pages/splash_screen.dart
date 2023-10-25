@@ -43,6 +43,7 @@ class _SplashScreenState extends State<SplashScreen> {
       duration: 1700,
       splashIconSize: 10000.0,
       // pageTransitionType: PageTransitionType.rightToLeftWithFade,
+      splashTransition: SplashTransition.fadeTransition,
       animationDuration: const Duration(seconds: 1),
     );
   }
