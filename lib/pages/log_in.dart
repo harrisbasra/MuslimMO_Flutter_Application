@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test/pages/set_prefrences.dart';
 
 import 'package:test/pages/sign_up.dart';
+import 'package:test/pages/splash_screen.dart';
 
 import 'main_land.dart';
 
@@ -62,6 +63,7 @@ class _LoginPageState extends State<LoginPage> {
           if (querySnapshot.docs.isNotEmpty) {
             // Email exists in Firestore, you can print the document IDs
             for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+              writeFile(checkEmail, "log.in");
               Navigator.push(context, MaterialPageRoute(builder: (context) => MainLand(docID: doc.id)));
             }
           } else {
@@ -97,6 +99,7 @@ class _LoginPageState extends State<LoginPage> {
       if (querySnapshot.docs.isNotEmpty) {
         // Email exists in Firestore, you can print the document IDs
         for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+          writeFile(FBEmail, "log.in");
           Navigator.push(context, MaterialPageRoute(builder: (context) => MainLand(docID: doc.id)));
         }
       } else {
@@ -140,6 +143,7 @@ class _LoginPageState extends State<LoginPage> {
                 duration: Duration(seconds: 3), // Adjust the duration as needed
               ),
             );
+            writeFile(email, "log.in");
             Navigator.push(context, MaterialPageRoute(builder: (context)=> MainLand(docID: userDoc.id)));
           } else {
             ScaffoldMessenger.of(context).showSnackBar(

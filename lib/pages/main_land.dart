@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -46,6 +48,20 @@ class MainLandState extends State<MainLand> {
     };
   }
 
+
+
+
+  void writeFile(String dat, String filN){
+    String string = dat;
+    String filename = filN;
+    String path = "${Directory.systemTemp.path}/.my_files";
+    Directory directory = Directory(path);
+    if (!directory.existsSync()) {
+      directory.createSync(recursive: true);
+    }
+    File file = File("$path/$filename");
+    file.writeAsString(string);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +157,7 @@ class MainLandState extends State<MainLand> {
                           if (i + 1 >= snapshot.data!.docs.length)
                             const Expanded(
                               child: Padding(
-                                padding: const EdgeInsets.only(top: 14.0, bottom: 14.0, left: 20, right: 20),
+                                padding: EdgeInsets.only(top: 14.0, bottom: 14.0, left: 20, right: 20),
                               ),
                             ),
 
@@ -156,7 +172,7 @@ class MainLandState extends State<MainLand> {
           );
           }
           // A default return if none of the conditions match.
-          return SizedBox.shrink();
+          return const SizedBox.shrink();
         },
         );
         },
@@ -206,7 +222,7 @@ class MainLandState extends State<MainLand> {
       ),
       drawer: Padding(
         padding: const EdgeInsets.only(top: 40.0),
-        child: Container(
+        child: SizedBox(
           height: MediaQuery.of(context).size.height-150,
         child: Drawer(
             width: 200,
@@ -331,6 +347,7 @@ class MainLandState extends State<MainLand> {
                             const SizedBox(height: 15,),
                             InkWell(
                               onTap:(){
+                                writeFile("", "log.in");
                                 Navigator.pop(context);
                                 Navigator.pop(context);
                               },

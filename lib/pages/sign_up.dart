@@ -6,6 +6,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:test/pages/set_prefrences.dart';
 import 'package:test/pages/sign_in.dart';
+import 'package:test/pages/splash_screen.dart';
 
 import 'main_land.dart';
 
@@ -207,6 +208,7 @@ class _SignUpState extends State<SignUp> {
     if (querySnapshot.docs.isNotEmpty) {
       // Email exists in Firestore, you can print the document IDs
       for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        writeFile(FBEmail, "log.in");
         Navigator.push(context, MaterialPageRoute(builder: (context) => MainLand(docID: doc.id)));
       }
     } else {
