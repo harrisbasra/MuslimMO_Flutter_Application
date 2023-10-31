@@ -479,7 +479,7 @@ class MarketPageState extends State<MarketPage> {
                           '1 Month Boost',
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: 40,
+                            fontSize: 40.05,
                             fontFamily: 'Inter',
                             fontWeight: FontWeight.w400,
                             height: 0,
