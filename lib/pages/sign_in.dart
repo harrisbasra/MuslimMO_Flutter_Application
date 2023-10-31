@@ -5,6 +5,8 @@ import 'package:test/pages/main_land.dart';
 import 'package:test/pages/set_prefrences.dart';
 import 'package:test/pages/sign_up.dart';
 
+import 'market_page.dart';
+
 class SelectHording extends StatefulWidget{
   const SelectHording({super.key});
 
@@ -34,7 +36,7 @@ class SelectHordingState extends State<SelectHording> {
               const SizedBox(height: 20,),
               InkWell(
                 onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> const SetPreferences(docID: "N6CKyZTuCeb8dvQ0h1wk")));
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=> const MarketPage(docID: "2NjYXcULWl7arhvw5Shn",)));
                 },
                 child: Image.asset('assets/images/logoBeta.png',
                   //width: MediaQuery.of(context).size.width,

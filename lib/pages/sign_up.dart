@@ -163,7 +163,7 @@ class _SignUpState extends State<SignUp> {
           : 'Non-Binary',
       'phone_number': '+${phoneControllerA.text}${phoneControllerB.text}',
       'country': selectedCountry.name,
-      'birth_date': '${selectedDate}/${selectedMonth}/${yearController.text}',
+      'birth_date': '$selectedDate/$selectedMonth/${yearController.text}',
       'reason_for_registering': selectedReason,
       'heard_about_us': selectedHear,
       'profession' : "Not Set",
@@ -268,7 +268,7 @@ class _SignUpState extends State<SignUp> {
                 child: Center(
                   child: TextFormField(
 
-                    cursorColor: Color.fromRGBO(255, 0, 239, 1.0),
+                    cursorColor: const Color.fromRGBO(255, 0, 239, 1.0),
                     keyboardType: TextInputType.emailAddress,
                     controller: fullNameController, // Assign the controller
                     decoration: InputDecoration(
@@ -286,7 +286,7 @@ class _SignUpState extends State<SignUp> {
                           width: 1.0,
                         ),
                       ),
-                      hoverColor: Color.fromRGBO(255, 0, 239, 1.0),
+                      hoverColor: const Color.fromRGBO(255, 0, 239, 1.0),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(800),
                         borderSide: const BorderSide(
@@ -313,10 +313,10 @@ class _SignUpState extends State<SignUp> {
                 ),
               ),
               const SizedBox(height: 14,),
-              Container(
+              SizedBox(
                 height: 48,
                 child: TextFormField(
-                  cursorColor: Color.fromRGBO(255, 0, 239, 1.0),
+                  cursorColor: const Color.fromRGBO(255, 0, 239, 1.0),
                   keyboardType: TextInputType.emailAddress,
                   controller: emailController, // Assign the controller
                   decoration: InputDecoration(
@@ -362,7 +362,7 @@ class _SignUpState extends State<SignUp> {
                 height: 48,
                 child: TextFormField(
                   obscureText: true,
-                  cursorColor: Color.fromRGBO(255, 0, 239, 1.0),
+                  cursorColor: const Color.fromRGBO(255, 0, 239, 1.0),
 
                   obscuringCharacter: "●",
 
@@ -409,7 +409,7 @@ class _SignUpState extends State<SignUp> {
               SizedBox(
                 height: 48,
                 child: TextFormField(
-                  cursorColor: Color.fromRGBO(255, 0, 239, 1.0),
+                  cursorColor: const Color.fromRGBO(255, 0, 239, 1.0),
                   obscureText: true,
                   obscuringCharacter: "●",
                   controller: confirmEmailController, // Assign the controller

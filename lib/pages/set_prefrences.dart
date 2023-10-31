@@ -23,30 +23,30 @@ class SetPreferencesState extends State<SetPreferences> {
     r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)*(\.[a-z]{2,4})$',
   );
 
-  final TextEditingController headlineController = TextEditingController();
-  final TextEditingController bioController = TextEditingController();
-  final TextEditingController educationController = TextEditingController();
-  final TextEditingController professionController = TextEditingController();
-  final TextEditingController jobController = TextEditingController();
-  final TextEditingController tongueController = TextEditingController();
-  final TextEditingController slangController = TextEditingController();
+  final TextEditingController headlineController = TextEditingController(text: "");
+  final TextEditingController bioController = TextEditingController(text: "");
+  final TextEditingController educationController = TextEditingController(text: "");
+  final TextEditingController professionController = TextEditingController(text: "");
+  final TextEditingController jobController = TextEditingController(text: "");
+  final TextEditingController tongueController = TextEditingController(text: "");
+  final TextEditingController slangController = TextEditingController(text: "");
 
-  final TextEditingController citizenshipController = TextEditingController();
-  final TextEditingController incomeController = TextEditingController();
-  final TextEditingController relocateController = TextEditingController();
-  final TextEditingController childrenController = TextEditingController();
+  final TextEditingController citizenshipController = TextEditingController(text: "");
+  final TextEditingController incomeController = TextEditingController(text: "");
+  final TextEditingController relocateController = TextEditingController(text: "");
+  final TextEditingController childrenController = TextEditingController(text: "");
 
-  final TextEditingController heightController = TextEditingController();
-  final TextEditingController hairController = TextEditingController();
-  final TextEditingController eyesController = TextEditingController();
-  final TextEditingController disabilityController = TextEditingController();
+  final TextEditingController heightController = TextEditingController(text: "");
+  final TextEditingController hairController = TextEditingController(text: "");
+  final TextEditingController eyesController = TextEditingController(text: "");
+  final TextEditingController disabilityController = TextEditingController(text: "");
 
-  final TextEditingController revertController = TextEditingController();
+  final TextEditingController revertController = TextEditingController(text: "");
 
 
-  final TextEditingController partnerEducation = TextEditingController();
-  final TextEditingController partnerProfession = TextEditingController();
-  final TextEditingController partnerTypeController = TextEditingController();
+  final TextEditingController partnerEducation = TextEditingController(text: "");
+  final TextEditingController partnerProfession = TextEditingController(text: "");
+  final TextEditingController partnerTypeController = TextEditingController(text: "");
 
 
 
@@ -1171,7 +1171,7 @@ class SetPreferencesState extends State<SetPreferences> {
                       const Align(
                         alignment: AlignmentDirectional.centerStart,
                         child: Text(
-                          'What I like to have Children?',
+                          'Would I like to have Children?',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 18,

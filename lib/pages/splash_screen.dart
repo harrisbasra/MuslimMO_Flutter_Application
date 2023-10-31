@@ -43,7 +43,7 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       ),
       screenFunction: () async {
-        FutureOr<Widget> oic = SelectHording();
+        FutureOr<Widget> oic = const SelectHording();
         //writeFile("", "log.in");
         //return SelectHording();
         String commit = readFile("log.in");
@@ -63,7 +63,7 @@ class _SplashScreenState extends State<SplashScreen> {
           }
         }
         else {
-          oic = SelectHording();
+          oic = const SelectHording();
         }
         return oic;
       },
@@ -90,15 +90,15 @@ String readFile(String filN) {
   }
 }
 
-void writeFile(String dat, String fil_n){
+void writeFile(String dat, String filN){
 
   String string = dat;
-  String filename = fil_n;
-  String path = Directory.systemTemp.path + "/.my_files";
+  String filename = filN;
+  String path = "${Directory.systemTemp.path}/.my_files";
   Directory directory = Directory(path);
   if (!directory.existsSync()) {
     directory.createSync(recursive: true);
   }
-  File file = File(path + "/" + filename);
+  File file = File("$path/$filename");
   file.writeAsString(string);
 }
