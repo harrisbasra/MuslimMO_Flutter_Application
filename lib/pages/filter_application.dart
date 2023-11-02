@@ -1,5 +1,6 @@
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:test/pages/main_land.dart';
 
 class FilterApplication extends StatefulWidget {
   final String docID;
@@ -28,11 +29,12 @@ class FilterApplicationState extends State<FilterApplication> {
       displayNameNoCountryCode: "PAK",
       e164Key: "");
 
-  String selectedcountry = "Pakistan";
 
   double _sliderValue = 50;
 
   String selectedGender = 'Any';
+
+  final TextEditingController profession = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -412,11 +414,12 @@ class FilterApplicationState extends State<FilterApplication> {
                             onTap: () {
                               // Replace this onTap function with your text field logic.
                             },
-                            child: const Row(
+                            child: Row(
                               children: [
                                 Expanded(
-                                  child: TextField(
-                                    decoration: InputDecoration(
+                                  child: TextFormField(
+                                    controller: profession,
+                                    decoration: const InputDecoration(
                                       border: InputBorder.none,
                                     ),
                                   ),
@@ -432,7 +435,24 @@ class FilterApplicationState extends State<FilterApplication> {
                 ),
               ),
               const SizedBox(height: 18,),
-              Image.asset("assets/icons/img_7.png", height: 30, fit: BoxFit.fitHeight,),
+              InkWell(
+                  onTap: (){
+                    String film = "";
+                    String bFilm = "";
+                    if(selectedGender=="Any"){
+                      selectedGender="";
+                    }
+                    if(selectedCountry.name=="Select your Country"){
+                      bFilm = "";
+                    }
+                    else{
+                      bFilm = selectedCountry.name;
+                    }
+                    film = "$bFilm|$_sliderValue|$selectedGender|${profession.text.trim()}";
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=> MainLand(docID: docID, filters: film,)));
+                  },
+                  child: Image.asset("assets/icons/img_7.png", height: 30, fit: BoxFit.fitHeight,)
+              ),
               //const Expanded(child: SizedBox(height: 10,)),
             ],
           ),

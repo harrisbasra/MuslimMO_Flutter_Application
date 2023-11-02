@@ -15,6 +15,8 @@ class Person {
   final String birthdate;
   final String documentId;
   final String rec_ID;
+  final String country;
+  final String Gender;
 
   Person({
     required this.imageLink,
@@ -23,6 +25,8 @@ class Person {
     required this.birthdate,
     required this.documentId,
     required this.rec_ID,
+    required this.country,
+    required this.Gender,
   });
 }
 
@@ -40,6 +44,9 @@ class MainLandState extends State<MainLand> {
   String docID;
   String filters;
   MainLandState({Key? key, required this.docID, required this.filters});
+
+
+  String myCountry = "";
 
   Future<Map<String, dynamic>> getUserProfile(String documentId) async {
     try {
@@ -114,8 +121,15 @@ class MainLandState extends State<MainLand> {
 
               if (snapshot.hasData) {
                 List<Person> people = [];
-                for (var i = 0; i < snapshot.data!.docs.length; i += 2) {
-                 if(snapshot.data!.docs[i].id!=widget.docID){
+
+                for (int i = 0; i < snapshot.data!.docs.length; i += 2) {
+
+                  if(snapshot.data!.docs[i].id==widget.docID){
+                    myCountry = snapshot.data!.docs[i]['country'];
+                  }
+
+                  if(snapshot.data!.docs[i].id!=widget.docID){
+                 //if(true){
                     people.add(
                         Person(
                           imageLink: snapshot.data!.docs[i]['imageUrls'][0] ??
@@ -125,12 +139,17 @@ class MainLandState extends State<MainLand> {
                           birthdate: snapshot.data!.docs[i]['birth_date'] ?? '',
                           documentId: snapshot.data!.docs[i].id,
                           rec_ID: widget.docID,
+                          Gender: snapshot.data!.docs[i]['gender'] ?? '',
+                          country: snapshot.data!.docs[i]['country'] ?? '',
                         ));
                   }
                   if(i + 1 < snapshot.data!.docs.length && snapshot.data!.docs[i+1].id==widget.docID){
+                    myCountry = snapshot.data!.docs[i + 1]['country'];
                     i=i+1;
                   }
-                  if (i + 1 < snapshot.data!.docs.length ) {
+
+
+                  if (i + 1 < snapshot.data!.docs.length) {
                     people.add(
                         Person(
                       imageLink: snapshot.data!.docs[i + 1]['imageUrls'][0] ??
@@ -140,9 +159,59 @@ class MainLandState extends State<MainLand> {
                       birthdate: snapshot.data!.docs[i + 1]['birth_date'] ?? '',
                       documentId: snapshot.data!.docs[i + 1].id,
                       rec_ID: widget.docID,
+                      Gender: snapshot.data!.docs[i+1]['gender'] ?? '',
+                      country: snapshot.data!.docs[i+1]['country'] ?? '',
                     ));
                   }
+
+
                 }
+
+                if (filters.isEmpty) {
+
+                }
+                else {
+                  List<String> filtees = filters.split("|");
+
+
+                  // PROFESSION
+
+                  if(filtees[3]!=""){
+                    people.removeWhere((person) => person.profession != filtees[3]);
+                  }
+
+                  // COUNTRY
+
+                  if(filtees[0]!=""){
+                    people.removeWhere((person) => person.country != filtees[0]);
+                  }
+
+                  // GENDER
+
+                  if(filtees[2]!=""){
+                    people.removeWhere((person) => person.Gender !=  filtees[2]);
+                  }
+
+                  // AGE
+
+                  if(filtees[1]!=""){
+                    DateTime now = DateTime.now();
+                    people.removeWhere((person) => (now.year - parseCustomDate(person.birthdate).year) >  double.parse(filtees[1]));
+                  }
+
+                }
+
+                people.sort((a, b) {
+                  String targetCountry = myCountry;
+                  print("FFFFFFFFFFF"+myCountry);
+                  double similarityA = a.country.toLowerCase().contains(targetCountry.toLowerCase()) ? 1 : 0;
+                  double similarityB = b.country.toLowerCase().contains(targetCountry.toLowerCase()) ? 1 : 0;
+                  // Compare based on similarity to the target country
+                  return similarityB.compareTo(similarityA);
+                });
+
+
+
 
                 return SingleChildScrollView(
                   child: Column(
@@ -160,7 +229,7 @@ class MainLandState extends State<MainLand> {
                               alignment: AlignmentDirectional.centerEnd,
                               child: InkWell(
                                 onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const FilterApplication(docID: '',)));
+                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const FilterApplication(docID: '',)));
                                 },
                                 child: const Padding(
                                   padding: EdgeInsets.only(right: 12.0),
@@ -449,6 +518,14 @@ class MainLandState extends State<MainLand> {
   }
 }
 
+DateTime parseCustomDate(String date) {
+  List<String> parts = date.split('/');
+  final day = int.parse(parts[0]);
+  final month = DateFormat.MMMM().parse(parts[1]).month;
+  final year = int.parse(parts[2]);
+  return DateTime(year, month, day);
+}
+
 class PersonRow extends StatelessWidget {
   final String imageLink;
   final String name;
@@ -467,13 +544,7 @@ class PersonRow extends StatelessWidget {
     required this.rec_ID,
   });
 
-  DateTime parseCustomDate(String date) {
-    List<String> parts = date.split('/');
-    final day = int.parse(parts[0]);
-    final month = DateFormat.MMMM().parse(parts[1]).month;
-    final year = int.parse(parts[2]);
-    return DateTime(year, month, day);
-  }
+
 
   @override
   Widget build(BuildContext context) {
