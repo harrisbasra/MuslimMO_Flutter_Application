@@ -209,7 +209,7 @@ class _SignUpState extends State<SignUp> {
       // Email exists in Firestore, you can print the document IDs
       for (QueryDocumentSnapshot doc in querySnapshot.docs) {
         writeFile(FBEmail, "log.in");
-        Navigator.push(context, MaterialPageRoute(builder: (context) => MainLand(docID: doc.id)));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => MainLand(docID: doc.id, filters: "",)));
       }
     } else {
       // Email doesn't exist in Firestore, show a snackbar to sign up

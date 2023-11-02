@@ -58,7 +58,7 @@ class _SplashScreenState extends State<SplashScreen> {
           if (querySnapshot.docs.isNotEmpty) {
             // Email exists in Firestore, you can print the document IDs
             for (QueryDocumentSnapshot doc in querySnapshot.docs) {
-              oic = MainLand(docID: doc.id);
+              oic = MainLand(docID: doc.id, filters: "",);
             }
           }
         }

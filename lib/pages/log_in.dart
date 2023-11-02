@@ -64,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
             // Email exists in Firestore, you can print the document IDs
             for (QueryDocumentSnapshot doc in querySnapshot.docs) {
               writeFile(checkEmail, "log.in");
-              Navigator.push(context, MaterialPageRoute(builder: (context) => MainLand(docID: doc.id)));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => MainLand(docID: doc.id, filters: "",)));
             }
           } else {
             // Email doesn't exist in Firestore, show a snackbar to sign up
@@ -100,7 +100,7 @@ class _LoginPageState extends State<LoginPage> {
         // Email exists in Firestore, you can print the document IDs
         for (QueryDocumentSnapshot doc in querySnapshot.docs) {
           writeFile(FBEmail, "log.in");
-          Navigator.push(context, MaterialPageRoute(builder: (context) => MainLand(docID: doc.id)));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => MainLand(docID: doc.id, filters: "",)));
         }
       } else {
         // Email doesn't exist in Firestore, show a snackbar to sign up
@@ -144,7 +144,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             );
             writeFile(email, "log.in");
-            Navigator.push(context, MaterialPageRoute(builder: (context)=> MainLand(docID: userDoc.id)));
+            Navigator.push(context, MaterialPageRoute(builder: (context)=> MainLand(docID: userDoc.id, filters: "",)));
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(

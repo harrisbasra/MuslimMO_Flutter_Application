@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:test/pages/chat_page.dart';
 import 'package:test/pages/filter_application.dart';
 import 'package:test/pages/show_profile.dart';
 
@@ -27,17 +28,18 @@ class Person {
 
 class MainLand extends StatefulWidget {
   final String docID;
-
-  const MainLand({Key? key, required this.docID}) : super(key: key);
+  final String filters;
+  const MainLand({Key? key, required this.docID, required this.filters}) : super(key: key);
 
   @override
-  MainLandState createState() => MainLandState(docID: docID);
+  MainLandState createState() => MainLandState(docID: docID, filters: filters);
 }
 
 class MainLandState extends State<MainLand> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   String docID;
-  MainLandState({Key? key, required this.docID});
+  String filters;
+  MainLandState({Key? key, required this.docID, required this.filters});
 
   Future<Map<String, dynamic>> getUserProfile(String documentId) async {
     try {
@@ -113,7 +115,7 @@ class MainLandState extends State<MainLand> {
               if (snapshot.hasData) {
                 List<Person> people = [];
                 for (var i = 0; i < snapshot.data!.docs.length; i += 2) {
-                  if(snapshot.data!.docs[i].id!=widget.docID){
+                 if(snapshot.data!.docs[i].id!=widget.docID){
                     people.add(
                         Person(
                           imageLink: snapshot.data!.docs[i]['imageUrls'][0] ??
@@ -215,6 +217,8 @@ class MainLandState extends State<MainLand> {
                                   rec_ID: people[i + 1].rec_ID,
                                 ),
                               ),
+                            if (i + 1 >= people.length)
+                              Expanded(child: Container())
                           ],
                         ),
                       const SizedBox(height: 18,),
@@ -272,7 +276,13 @@ class MainLandState extends State<MainLand> {
             Image.asset("assets/icons/img_11.png", width: 40, height: 40,),
             Image.asset("assets/icons/img_12.png", width: 40, height: 40,),
             Image.asset("assets/icons/img_13.png", width: 40, height: 40,),
-            Image.asset("assets/icons/img_14.png", width: 40, height: 40,),
+            InkWell(
+                onTap: () async {
+                  String username = await fetchNameFromFirestore(widget.docID);
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ChatPage(docID: widget.docID)));
+                },
+                child: Image.asset("assets/icons/img_14.png", width: 40, height: 40,)
+            ),
             InkWell(
                 onTap: () async {
                   String username = await fetchNameFromFirestore(widget.docID);
