@@ -196,73 +196,28 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 25,),
-            const Text(
-              ' Log In',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 39,
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w400,
-                height: 0,
-              ),
-            ),
-            const SizedBox(height: 35),
-            const Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: Text(
-                'Email',
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: 25,),
+              const Text(
+                ' Log In',
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 20,
+                  fontSize: 39,
                   fontFamily: 'Inter',
                   fontWeight: FontWeight.w400,
                   height: 0,
                 ),
-              )
-            ),
-            const SizedBox(height: 14,),
-            Container(
-              height: 48,
-              child: TextFormField(
-                cursorColor: const Color.fromRGBO(255, 0, 239, 1.0),
-
-                controller: emailController,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  hintText: 'Enter your Email or Phone Number',
-                  hintStyle: TextStyle(
-                    color: Colors.grey.shade400
-                  ),
-                  fillColor: Colors.white,
-                  filled: true,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(800),
-                    borderSide: const BorderSide(
-                      color: Color.fromRGBO(255, 0, 239, 1.0),
-                      width: 1.0,
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(800),
-                    borderSide: const BorderSide(
-                      color: Color.fromRGBO(255, 0, 239, 1.0),
-                      width: 1.0,
-                    ),
-                  ),
-                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            const Align(
+              const SizedBox(height: 35),
+              const Align(
                 alignment: AlignmentDirectional.centerStart,
                 child: Text(
-                  'Password',
+                  'Email',
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 20,
@@ -271,107 +226,154 @@ class _LoginPageState extends State<LoginPage> {
                     height: 0,
                   ),
                 )
-            ),
-            const SizedBox(height: 14,),
-            Container(
-              height: 48,
-              child: TextFormField(
-                cursorColor: Color.fromRGBO(255, 0, 239, 1.0),
-                //obscureText: !pass,
-                obscureText: true,
-                obscuringCharacter: "●",
-                controller: passwordController,
-                decoration: InputDecoration(
-                  // suffixIcon: InkWell(
-                  //     onTap: (){
-                  //       setState(() {
-                  //         pass=!pass;
-                  //       });
-                  //     },
-                  //     child: pass==true? Icon(Icons.visibility, color: Colors.grey.shade400,):Icon(Icons.visibility_off, color: Colors.grey.shade400,),),
-                  hintText: 'Enter your Password',
-                  hintStyle: TextStyle(
+              ),
+              const SizedBox(height: 14,),
+              Container(
+                height: 48,
+                child: TextFormField(
+                  cursorColor: const Color.fromRGBO(255, 0, 239, 1.0),
+
+                  controller: emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                    hintText: 'Enter your Email or Phone Number',
+                    hintStyle: TextStyle(
                       color: Colors.grey.shade400
-                  ),
-                  hintTextDirection: TextDirection.ltr,
-                  fillColor: Colors.white,
-                  filled: true,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(800),
-                    borderSide: const BorderSide(
-                      color: Colors.black,
-                      width: 1.0,
                     ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(800),
-                    borderSide: const BorderSide(
-                      color: Color.fromRGBO(255, 0, 239, 1.0),
-                      width: 1.0,
+                    fillColor: Colors.white,
+                    filled: true,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(800),
+                      borderSide: const BorderSide(
+                        color: Color.fromRGBO(255, 0, 239, 1.0),
+                        width: 1.0,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(800),
+                      borderSide: const BorderSide(
+                        color: Color.fromRGBO(255, 0, 239, 1.0),
+                        width: 1.0,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 24),
-            InkWell(
-              onTap: (){
-                final String email = emailController.text;
-                final String password = passwordController.text;
-                loginWithEmailAndPassword(email, password);
-              },
-              child: Image.asset(
-                'assets/images/logMB.png',
+              const SizedBox(height: 20),
+              const Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Text(
+                    'Password',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w400,
+                      height: 0,
+                    ),
+                  )
+              ),
+              const SizedBox(height: 14,),
+              Container(
+                height: 48,
+                child: TextFormField(
+                  cursorColor: Color.fromRGBO(255, 0, 239, 1.0),
+                  //obscureText: !pass,
+                  obscureText: true,
+                  obscuringCharacter: "●",
+                  controller: passwordController,
+                  decoration: InputDecoration(
+                    // suffixIcon: InkWell(
+                    //     onTap: (){
+                    //       setState(() {
+                    //         pass=!pass;
+                    //       });
+                    //     },
+                    //     child: pass==true? Icon(Icons.visibility, color: Colors.grey.shade400,):Icon(Icons.visibility_off, color: Colors.grey.shade400,),),
+                    hintText: 'Enter your Password',
+                    hintStyle: TextStyle(
+                        color: Colors.grey.shade400
+                    ),
+                    hintTextDirection: TextDirection.ltr,
+                    fillColor: Colors.white,
+                    filled: true,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(800),
+                      borderSide: const BorderSide(
+                        color: Colors.black,
+                        width: 1.0,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(800),
+                      borderSide: const BorderSide(
+                        color: Color.fromRGBO(255, 0, 239, 1.0),
+                        width: 1.0,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              InkWell(
+                onTap: (){
+                  final String email = emailController.text;
+                  final String password = passwordController.text;
+                  loginWithEmailAndPassword(email, password);
+                },
+                child: Image.asset(
+                  'assets/images/logMB.png',
 
-                height: 40,
-                fit: BoxFit.fitHeight,
+                  height: 40,
+                  fit: BoxFit.fitHeight,
+                ),
               ),
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              'or',
-              style: TextStyle(fontSize: 16),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            InkWell(
-              onTap: (){
-                signup(context);
-              },
-              child: Image.asset(
-                'assets/images/gLB.png',
-                height: 30,
-                fit: BoxFit.fitHeight,
+              const SizedBox(height: 24),
+              const Text(
+                'or',
+                style: TextStyle(fontSize: 16),
+                textAlign: TextAlign.center,
               ),
-            ),
-            const SizedBox(height: 15),
-            InkWell(
-              onTap: (){
-                signInWithFacebook();
-                // final String email = emailController.text;
-                // Navigator.push(context, MaterialPageRoute(builder: (context)=> BufferPage()));
-              },
-              child: Image.asset(
-                'assets/images/fLB.png',
-                height: 30,
-                fit: BoxFit.fitHeight,
+              const SizedBox(height: 20),
+              InkWell(
+                onTap: (){
+                  signup(context);
+                },
+                child: Image.asset(
+                  'assets/images/gLB.png',
+                  height: 30,
+                  fit: BoxFit.fitHeight,
+                ),
               ),
-            ),
-            const SizedBox(height: 15),
-            InkWell(
-              // onTap: (){
-              //   final String email = emailController.text;
-              //   Navigator.push(context, MaterialPageRoute(builder: (context)=> BufferPage()));
-              // },
-              child: Image.asset(
-                'assets/images/aLB.png',
-                // width: MediaQuery.of(context).size.width * 0.5,
-                // fit: BoxFit.fitWidth,
-                height: 30,
-                fit: BoxFit.fitHeight,
+              const SizedBox(height: 15),
+              InkWell(
+                onTap: (){
+                  signInWithFacebook();
+                  // final String email = emailController.text;
+                  // Navigator.push(context, MaterialPageRoute(builder: (context)=> BufferPage()));
+                },
+                child: Image.asset(
+                  'assets/images/fLB.png',
+                  height: 30,
+                  fit: BoxFit.fitHeight,
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 15),
+              InkWell(
+                // onTap: (){
+                //   final String email = emailController.text;
+                //   Navigator.push(context, MaterialPageRoute(builder: (context)=> BufferPage()));
+                // },
+                child: Image.asset(
+                  'assets/images/aLB.png',
+                  // width: MediaQuery.of(context).size.width * 0.5,
+                  // fit: BoxFit.fitWidth,
+                  height: 30,
+                  fit: BoxFit.fitHeight,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: InkWell(

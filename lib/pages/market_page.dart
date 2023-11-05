@@ -183,18 +183,40 @@ class MarketPageState extends State<MarketPage> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            child: const Center(
-                              child: Text(
-                                'Buy Now',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 18,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w400,
-                                  height: 0,
+                            child: InkWell(
+                              onTap: () {
+                                FirebaseFirestore.instance.collection('users').doc(widget.docID).update({
+                                  'paidA': '1',
+                                }).then((value) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Subscribed Successfully'),
+                                      duration: Duration(seconds: 3),
+                                    ),
+                                  );
+                                }).catchError((error) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Error. Try Again !'),
+                                      duration: Duration(seconds: 3),
+                                    ),
+                                  );
+                                });
+                              },
+                              child: const Center(
+                                child: Text(
+                                  'Buy Now',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 18,
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.w400,
+                                    height: 0,
+                                  ),
                                 ),
                               ),
                             ),
+
                           ),
                         ),
                         const Expanded(flex: 1, child: SizedBox(height: 10,)),
@@ -248,15 +270,36 @@ class MarketPageState extends State<MarketPage> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            child: const Center(
-                              child: Text(
-                                'Buy Now',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 18,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w400,
-                                  height: 0,
+                            child: InkWell(
+                              onTap: () {
+                                FirebaseFirestore.instance.collection('users').doc(widget.docID).update({
+                                  'paidA': '2',
+                                }).then((value) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Subscribed Successfully'),
+                                      duration: Duration(seconds: 3),
+                                    ),
+                                  );
+                                }).catchError((error) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Error. Try Again !'),
+                                      duration: Duration(seconds: 3),
+                                    ),
+                                  );
+                                });
+                              },
+                              child: const Center(
+                                child: Text(
+                                  'Buy Now',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 18,
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.w400,
+                                    height: 0,
+                                  ),
                                 ),
                               ),
                             ),
@@ -313,15 +356,36 @@ class MarketPageState extends State<MarketPage> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            child: const Center(
-                              child: Text(
-                                'Buy Now',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 18,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w400,
-                                  height: 0,
+                            child: InkWell(
+                              onTap: () {
+                                FirebaseFirestore.instance.collection('users').doc(widget.docID).update({
+                                  'paidA': '3',
+                                }).then((value) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Subscribed Successfully'),
+                                      duration: Duration(seconds: 3),
+                                    ),
+                                  );
+                                }).catchError((error) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Error. Try Again !'),
+                                      duration: Duration(seconds: 3),
+                                    ),
+                                  );
+                                });
+                              },
+                              child: const Center(
+                                child: Text(
+                                  'Buy Now',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 18,
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.w400,
+                                    height: 0,
+                                  ),
                                 ),
                               ),
                             ),
@@ -388,15 +452,36 @@ class MarketPageState extends State<MarketPage> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            child: const Center(
-                              child: Text(
-                                'Buy Now',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 18,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w400,
-                                  height: 0,
+                            child: InkWell(
+                              onTap: () {
+                                FirebaseFirestore.instance.collection('users').doc(widget.docID).update({
+                                  'paidB': '1',
+                                }).then((value) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Subscribed Successfully'),
+                                      duration: Duration(seconds: 3),
+                                    ),
+                                  );
+                                }).catchError((error) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Error. Try Again !'),
+                                      duration: Duration(seconds: 3),
+                                    ),
+                                  );
+                                });
+                              },
+                              child: const Center(
+                                child: Text(
+                                  'Buy Now',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 18,
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.w400,
+                                    height: 0,
+                                  ),
                                 ),
                               ),
                             ),
@@ -443,15 +528,36 @@ class MarketPageState extends State<MarketPage> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            child: const Center(
-                              child: Text(
-                                'Buy Now',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 18,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w400,
-                                  height: 0,
+                            child: InkWell(
+                              onTap: () {
+                                FirebaseFirestore.instance.collection('users').doc(widget.docID).update({
+                                  'paidB': '2',
+                                }).then((value) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Subscribed Successfully'),
+                                      duration: Duration(seconds: 3),
+                                    ),
+                                  );
+                                }).catchError((error) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Error. Try Again !'),
+                                      duration: Duration(seconds: 3),
+                                    ),
+                                  );
+                                });
+                              },
+                              child: const Center(
+                                child: Text(
+                                  'Buy Now',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 18,
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.w400,
+                                    height: 0,
+                                  ),
                                 ),
                               ),
                             ),
@@ -498,15 +604,36 @@ class MarketPageState extends State<MarketPage> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                             ),
-                            child: const Center(
-                              child: Text(
-                                'Buy Now',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 18,
-                                  fontFamily: 'Inter',
-                                  fontWeight: FontWeight.w400,
-                                  height: 0,
+                            child: InkWell(
+                              onTap: () {
+                                FirebaseFirestore.instance.collection('users').doc(widget.docID).update({
+                                  'paidC': '3',
+                                }).then((value) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Subscribed Successfully'),
+                                      duration: Duration(seconds: 3),
+                                    ),
+                                  );
+                                }).catchError((error) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Error. Try Again !'),
+                                      duration: Duration(seconds: 3),
+                                    ),
+                                  );
+                                });
+                              },
+                              child: const Center(
+                                child: Text(
+                                  'Buy Now',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 18,
+                                    fontFamily: 'Inter',
+                                    fontWeight: FontWeight.w400,
+                                    height: 0,
+                                  ),
                                 ),
                               ),
                             ),
@@ -539,3 +666,4 @@ class MarketPageState extends State<MarketPage> {
     );
   }
 }
+

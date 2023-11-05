@@ -167,6 +167,8 @@ class _SignUpState extends State<SignUp> {
       'reason_for_registering': selectedReason,
       'heard_about_us': selectedHear,
       'profession' : "Not Set",
+      'paidA' : "0",
+      'paidB' : "0",
       'imageUrls' : ['https://firebasestorage.googleapis.com/v0/b/muslimmatt-270d5.appspot.com/o/profile_images%2Fimage_2023-10-19_000724079.png?alt=media&token=0111fcb2-b173-4a64-9ef6-70dee846d447&_gl=1*1tk9lym*_ga*MTc0MTQzMTkwLjE2OTI4MjAwNTA.*_ga_CW55HF8NVT*MTY5NzY1NjAzMC4zMy4xLjE2OTc2NTYwNzAuMjAuMC4w']
     };
 

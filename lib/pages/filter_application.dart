@@ -29,8 +29,7 @@ class FilterApplicationState extends State<FilterApplication> {
       displayNameNoCountryCode: "PAK",
       e164Key: "");
 
-
-  double _sliderValue = 50;
+  RangeValues _sliderValues = const RangeValues(18, 50);
 
   String selectedGender = 'Any';
 
@@ -190,7 +189,7 @@ class FilterApplicationState extends State<FilterApplication> {
                       const Align(
                         alignment: AlignmentDirectional.centerStart,
                         child: Text(
-                          'Choose Age',
+                          'Choose Age Range',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 24,
@@ -201,30 +200,45 @@ class FilterApplicationState extends State<FilterApplication> {
                         ),
                       ),
                       const SizedBox(height: 12,),
-                      Slider(
-                        value: _sliderValue,
+                      RangeSlider(
+                        values: _sliderValues,
                         min: 18,
                         max: 100,
-                        onChanged: (value) {
+                        onChanged: (RangeValues values) {
                           setState(() {
-                            _sliderValue = value;
+                            _sliderValues = values;
                           });
                         },
                         activeColor: Colors.pink,
                         inactiveColor: Colors.grey,
                       ),
                       const SizedBox(height: 2),
-                      Text(
-                        '${_sliderValue.toInt()}',
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 18,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w400,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '${_sliderValues.start.toInt()}',
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          Text(
+                            '${_sliderValues.end.toInt()}',
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
-                  ),
+                  )
+
                 ),
               ),
               const SizedBox(height: 18,),
@@ -448,7 +462,8 @@ class FilterApplicationState extends State<FilterApplication> {
                     else{
                       bFilm = selectedCountry.name;
                     }
-                    film = "$bFilm|$_sliderValue|$selectedGender|${profession.text.trim()}";
+
+                    film = "$bFilm|${_sliderValues.end}|$selectedGender|${profession.text.trim()}|${_sliderValues.end}";
                     Navigator.push(context, MaterialPageRoute(builder: (context)=> MainLand(docID: docID, filters: film,)));
                   },
                   child: Image.asset("assets/icons/img_7.png", height: 30, fit: BoxFit.fitHeight,)

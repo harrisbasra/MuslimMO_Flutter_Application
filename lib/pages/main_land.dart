@@ -199,6 +199,11 @@ class MainLandState extends State<MainLand> {
                     people.removeWhere((person) => (now.year - parseCustomDate(person.birthdate).year) >  double.parse(filtees[1]));
                   }
 
+                  if(filtees[4]!=""){
+                    DateTime now = DateTime.now();
+                    people.removeWhere((person) => (now.year - parseCustomDate(person.birthdate).year) <  double.parse(filtees[4]));
+                  }
+
                 }
 
                 people.sort((a, b) {
@@ -355,7 +360,7 @@ class MainLandState extends State<MainLand> {
             InkWell(
                 onTap: () async {
                   String username = await fetchNameFromFirestore(widget.docID);
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ShowProfile(docID: widget.docID, name: username, CP: true)));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ShowProfile(docID: widget.docID,meID: widget.docID,  name: username, CP: true)));
                 },
                 child: Image.asset("assets/icons/img_15.png", width: 40, height: 40,)
             ),
@@ -420,7 +425,7 @@ class MainLandState extends State<MainLand> {
                             const SizedBox(height: 15,),
                             InkWell(
                               onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => ShowProfile(docID: widget.docID, name: snapshot.data?['name'], CP: true)));
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => ShowProfile(docID: widget.docID,meID: widget.docID, name: snapshot.data?['name'], CP: true)));
                               },
                               child: const Text(
                                 "Profile",
@@ -557,7 +562,7 @@ class PersonRow extends StatelessWidget {
         bool hasChildren = await checkForChildrenAttribute(documentId);
 
         if (hasChildren) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => ShowProfile(docID: documentId, CP: (rec_ID == documentId), name: name,)));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => ShowProfile(docID: documentId, meID: rec_ID,CP: (rec_ID == documentId), name: name,)));
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(

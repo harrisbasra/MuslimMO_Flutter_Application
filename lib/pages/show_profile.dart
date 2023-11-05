@@ -1,21 +1,26 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:test/pages/edit_prefrences.dart';
+import 'package:test/pages/market_page.dart';
+import 'package:test/pages/texting_service.dart';
 
 class ShowProfile extends StatefulWidget {
   final String docID;
+  final String meID;
   final bool CP;
   final String name;
 
-  const ShowProfile({Key? key, required this.docID, required this.name, required this.CP}) : super(key: key);
+  const ShowProfile({Key? key, required this.docID, required this.name, required this.CP, required this.meID}) : super(key: key);
 
   @override
-  ShowProfileState createState() => ShowProfileState(docID: docID);
+  ShowProfileState createState() => ShowProfileState(docID: docID, meID: meID);
 }
 
 class ShowProfileState extends State<ShowProfile> {
   String docID;
-  ShowProfileState({Key? key, required this.docID});
+  String meID;
+  ShowProfileState({Key? key, required this.docID, required this.meID});
 
   String username = "";
 
@@ -88,7 +93,9 @@ class ShowProfileState extends State<ShowProfile> {
           imageUrl = List<String>.from(userData['imageUrls']);
           //print("LOL:$imageUrl");
         } else {
-          print('Document does not exist.');
+          if (kDebugMode) {
+            print('Document does not exist.');
+          }
         }
       });
       return userData;
@@ -188,6 +195,36 @@ class ShowProfileState extends State<ShowProfile> {
                           fontWeight: FontWeight.bold,
                           height: 0,
                         ),
+                      ),
+                    ),
+                    const SizedBox(height: 28,),
+                    if(widget.CP==false)
+                    InkWell(
+                      onTap: () async {
+                        final documentSnapshot = await FirebaseFirestore.instance.collection('users').doc(meID).get();
+
+                        if (documentSnapshot.exists) {
+                          print("HUJKO"+meID);
+                          final data = documentSnapshot.data() as Map<String, dynamic>;
+                          String paidA = data['paidA'];
+
+                          if (paidA != "0") {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => TextingService(meDocID: meID, otrDocID: docID,)));
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Subscribe First !'),
+                                duration: Duration(seconds: 3),
+                              ),
+                            );
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => MarketPage(docID: meID)));
+                          }
+                        }
+                      },
+                      child: Image.asset(
+                        'assets/icons/img_19.png',
+                        height: 40,
+                        fit: BoxFit.fitHeight,
                       ),
                     ),
                     const SizedBox(height: 28,),
@@ -689,16 +726,14 @@ class ShowProfileState extends State<ShowProfile> {
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Container(
-                                      child: Text(
-                                        hairColor.length>10?hairColor.replaceRange(10, hairColor.length, ".."):hairColor,
-                                        style: const TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 18,
-                                          fontFamily: 'Inter',
-                                          fontWeight: FontWeight.w400,
-                                          height: 0.10,
-                                        ),
+                                    Text(
+                                      hairColor.length>10?hairColor.replaceRange(10, hairColor.length, ".."):hairColor,
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 18,
+                                        fontFamily: 'Inter',
+                                        fontWeight: FontWeight.w400,
+                                        height: 0.10,
                                       ),
                                     ),
                                     const SizedBox(height: 28,),
@@ -1035,9 +1070,9 @@ class ShowProfileState extends State<ShowProfile> {
               onTap: (){
                 Navigator.push(context, MaterialPageRoute(builder: (context)=> EditPreferences(docID: docID)));
               },
-              child: Padding(
-                padding: const EdgeInsets.only(right: 10.0),
-                child: const Icon(Icons.edit),
+              child: const Padding(
+                padding: EdgeInsets.only(right: 10.0),
+                child: Icon(Icons.edit),
               )
           ),
         ],
