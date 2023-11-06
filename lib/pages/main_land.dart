@@ -6,7 +6,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:test/pages/chat_page.dart';
 import 'package:test/pages/filter_application.dart';
+import 'package:test/pages/log_in.dart';
 import 'package:test/pages/show_profile.dart';
+import 'package:test/pages/splash_screen.dart';
 
 class Person {
   final String imageLink;
@@ -172,7 +174,7 @@ class MainLandState extends State<MainLand> {
                 }
                 else {
                   List<String> filtees = filters.split("|");
-
+                  print(filters);
 
                   // PROFESSION
 
@@ -495,8 +497,10 @@ class MainLandState extends State<MainLand> {
                             InkWell(
                               onTap: () {
                                 writeFile("", "log.in");
-                                Navigator.pop(context);
-                                Navigator.pop(context);
+                                Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(builder: (context) => const SplashScreen()),
+                                      (route) => false,
+                                );
                               },
                               child: const Text(
                                 "Logout",
@@ -540,7 +544,7 @@ class PersonRow extends StatelessWidget {
   final String rec_ID;
 
   PersonRow({
-    Key? key,
+    super.key,
     required this.imageLink,
     required this.name,
     required this.profession,
@@ -548,8 +552,6 @@ class PersonRow extends StatelessWidget {
     required this.documentId,
     required this.rec_ID,
   });
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -562,7 +564,17 @@ class PersonRow extends StatelessWidget {
         bool hasChildren = await checkForChildrenAttribute(documentId);
 
         if (hasChildren) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => ShowProfile(docID: documentId, meID: rec_ID,CP: (rec_ID == documentId), name: name,)));
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ShowProfile(
+                docID: documentId,
+                meID: rec_ID,
+                CP: (rec_ID == documentId),
+                name: name,
+              ),
+            ),
+          );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -590,21 +602,20 @@ class PersonRow extends StatelessWidget {
                 fit: BoxFit.cover,
               ),
             ),
-            const SizedBox(height: 6,),
+            const SizedBox(height: 6),
             Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween, // Add this line
               children: [
                 Text(
-                  name,
+                  name.length>6?name.replaceRange(6, name.length, ".."):name,
                   style: const TextStyle(
                     color: Colors.black,
-                    fontSize: 18,
+                    fontSize: 14,
                     fontFamily: 'Inter',
                     fontWeight: FontWeight.w400,
                     height: 0,
                   ),
                 ),
-                const SizedBox(width: 55,),
                 Text(
                   '$age yr old',
                   style: const TextStyle(

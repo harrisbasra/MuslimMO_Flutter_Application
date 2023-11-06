@@ -204,12 +204,12 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               const SizedBox(height: 25,),
               const Text(
-                ' Log In',
+                'Log In',
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 39,
                   fontFamily: 'Inter',
-                  fontWeight: FontWeight.w400,
+                  fontWeight: FontWeight.bold,
                   height: 0,
                 ),
               ),

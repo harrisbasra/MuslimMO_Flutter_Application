@@ -223,25 +223,25 @@ class SetPreferencesState extends State<SetPreferences> {
 
     // Create a map with the information you want to update
     Map<String, dynamic> data = {
-      'headline': headlineController.text,
-      'bio': bioController.text,
-      'education': educationController.text,
-      'profession': professionController.text,
-      'job': jobController.text,
-      'tongue': tongueController.text,
-      'slang': slangController.text,
-      'citizenship': citizenshipController.text,
-      'income': incomeController.text,
-      'relocate': relocateController.text,
-      'children': childrenController.text,
-      'height': heightController.text,
-      'hair': hairController.text,
-      'eyes': eyesController.text,
-      'disability': disabilityController.text,
-      'revert': revertController.text,
-      'partnerEducation': partnerEducation.text,
-      'partnerProfession': partnerProfession.text,
-      'partnerType': partnerTypeController.text,
+      'headline': headlineController.text.isEmpty ? '' : headlineController.text,
+      'bio': bioController.text.isEmpty ? '' : bioController.text,
+      'education': educationController.text.isEmpty ? '' : educationController.text,
+      'profession': professionController.text.isEmpty ? '' : professionController.text,
+      'job': jobController.text.isEmpty ? '' : jobController.text,
+      'tongue': tongueController.text.isEmpty ? '' : tongueController.text,
+      'slang': slangController.text.isEmpty ? '' : slangController.text,
+      'citizenship': citizenshipController.text.isEmpty ? '' : citizenshipController.text,
+      'income': incomeController.text.isEmpty ? '' : incomeController.text,
+      'relocate': relocateController.text.isEmpty ? '' : relocateController.text,
+      'children': childrenController.text.isEmpty ? '' : childrenController.text,
+      'height': heightController.text.isEmpty ? '' : heightController.text,
+      'hair': hairController.text.isEmpty ? '' : hairController.text,
+      'eyes': eyesController.text.isEmpty ? '' : eyesController.text,
+      'disability': disabilityController.text.isEmpty ? '' : disabilityController.text,
+      'revert': revertController.text.isEmpty ? '' : revertController.text,
+      'partnerEducation': partnerEducation.text.isEmpty ? '' : partnerEducation.text,
+      'partnerProfession': partnerProfession.text.isEmpty ? '' : partnerProfession.text,
+      'partnerType': partnerTypeController.text.isEmpty ? '' : partnerTypeController.text,
       'gender': isMaleSelected ? 'Male' : isFemaleSelected ? 'Female' : 'Non-Binary',
       'children': yesChildren ? 'Yes' : noChildren ? 'No' : 'Maybe',
       'hijab': yesHijab ? 'Yes' : noHijab ? 'No' : 'Occasionally',
@@ -254,14 +254,16 @@ class SetPreferencesState extends State<SetPreferences> {
       'livingArrange': livingArrange,
       'smokeFreq': smokeFreq,
       'buildCont': buildCont,
-      'religion': religionController,
-      'sect': sectController,
-      'halal': halalController,
+      'religion': religionController ?? '', // Handle possible null values
+      'sect': sectController ?? '', // Handle possible null values
+      'halal': halalController ?? '', // Handle possible null values
       'partnerLocation': partnerLocation,
       'partnerReligion': partnerReligion,
       'partnerSect': partnerSect,
       'imageUrls': imageUrls,
     };
+
+
 
     users.doc(docID).update(data).then((value) {
       ScaffoldMessenger.of(context).showSnackBar(

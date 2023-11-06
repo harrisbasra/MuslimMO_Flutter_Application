@@ -13,6 +13,9 @@ void main() async {
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent
   ));
+  ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+    return Container(width: 0, height: 0, color: Colors.transparent,);
+  };
   runApp(const MyApp());
 
 }
@@ -22,6 +25,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+
       title: 'Muslim Marriage Online',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

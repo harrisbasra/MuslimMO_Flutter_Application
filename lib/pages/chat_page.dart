@@ -59,100 +59,110 @@ class ChatPageState extends State<ChatPage> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.all(16),
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Colors.pink,
-                          width: 4.0,
-                        ),
-                      ),
-                    ),
-                    child: const Text(
-                      "All Chats",
-                      style: TextStyle(
-                        color: Color(0xFF707070),
-                        fontSize: 23,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w400,
-                        height: 0,
+      body: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(16),
+                  decoration: const BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: Colors.pink,
+                        width: 4.0,
                       ),
                     ),
                   ),
+                  child: const Text(
+                    "All Chats",
+                    style: TextStyle(
+                      color: Color(0xFF707070),
+                      fontSize: 23,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w400,
+                      height: 0,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20,),
+          Expanded(
+            child: ListView(
+              physics: AlwaysScrollableScrollPhysics(),
+              children: [
+                FutureBuilder<void>(
+                  future: loadUsersList(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Container();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                        child: Column(
+                          children: usersList.map((user) {
+                            return FutureBuilder<String>(
+                              future: getUsernameFromDocumentId(user),
+                              builder: (context, usernameSnapshot) {
+                                if (usernameSnapshot.connectionState == ConnectionState.waiting) {
+                                  return Container();
+                                } else if (usernameSnapshot.hasError) {
+                                  return Text('Error: ${usernameSnapshot.error}');
+                                } else {
+                                  String username = usernameSnapshot.data ?? "User not found";
+
+                                  return FutureBuilder<String>(
+                                    future: getImageUrlFromDocumentId(user),
+                                    builder: (context, imageSnapshot) {
+                                      if (imageSnapshot.connectionState == ConnectionState.waiting) {
+                                        return Container();
+                                      } else if (imageSnapshot.hasError) {
+                                        return Text('Error: ${imageSnapshot.error}');
+                                      } else {
+                                        String imageLink = imageSnapshot.data ?? "DefaultImageLink";
+
+                                        return Column(
+                                          children: [
+                                            ChatMessage(
+                                              imageLink: imageLink,
+                                              name: username,
+                                              otrID: user,
+                                              read: false,
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => TextingService(
+                                                      meDocID: meID,
+                                                      otrDocID: user,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      }
+                                    },
+                                  );
+                                }
+                              },
+                            );
+                          }).toList(),
+                        ),
+                      );
+                    }
+                  },
                 ),
               ],
             ),
-            FutureBuilder<void>(
-              future: loadUsersList(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else {
-                  return Padding(
-                    padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-                    child: Column(
-                      children: usersList.map((user) {
-                        return FutureBuilder<String>(
-                          future: getUsernameFromDocumentId(user),
-                          builder: (context, usernameSnapshot) {
-                            if (usernameSnapshot.connectionState == ConnectionState.waiting) {
-                              return const CircularProgressIndicator();
-                            } else if (usernameSnapshot.hasError) {
-                              return Text('Error: ${usernameSnapshot.error}');
-                            } else {
-                              String username = usernameSnapshot.data ?? "User not found";
-
-                              return FutureBuilder<String>(
-                                future: getImageUrlFromDocumentId(user),
-                                builder: (context, imageSnapshot) {
-                                  if (imageSnapshot.connectionState == ConnectionState.waiting) {
-                                    return const CircularProgressIndicator();
-                                  } else if (imageSnapshot.hasError) {
-                                    return Text('Error: ${imageSnapshot.error}');
-                                  } else {
-                                    String imageLink = imageSnapshot.data ?? "DefaultImageLink";
-
-                                    return ChatMessage(
-                                      imageLink: imageLink,
-                                      name: username,
-                                      otrID: user,
-                                      read: false,
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => TextingService(
-                                              meDocID: meID,
-                                              otrDocID: user,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  }
-                                },
-                              );
-                            }
-                          },
-                        );
-                      }).toList(),
-                    ),
-                  );
-                }
-              },
-            )
-          ],
-        ),
+          ),
+        ],
       ),
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
@@ -167,6 +177,7 @@ class ChatPageState extends State<ChatPage> {
       ),
     );
   }
+
 
   Future<void> loadUsersList() async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -246,7 +257,7 @@ class ChatMessage extends StatelessWidget {
         onTap();
       },
       child: Padding(
-        padding: const EdgeInsets.only(top: 20.0),
+        padding: const EdgeInsets.only(bottom: 20.0,),
         child: Container(
           width: MediaQuery.of(context).size.width,
           height: 84,
@@ -271,8 +282,17 @@ class ChatMessage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 const SizedBox(width: 10),
-                ClipOval(
-                  child: Image.network(imageLink, width: 68, height: 68), // Use Image.network for network images
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(800),
+                    border: Border.all(
+                      color: Colors.black,
+                      width: 1
+                    )
+                  ),
+                  child: ClipOval(
+                    child: Image.network(imageLink, width: 68, height: 68, fit: BoxFit.fitWidth,), // Use Image.network for network images
+                  ),
                 ),
                 const SizedBox(width: 10),
                 Column(
@@ -318,7 +338,11 @@ class ChatMessage extends StatelessWidget {
                           );
                         }
                         return Text(
-                          snapshot.data ?? 'No messages yet',
+                          snapshot.data != null
+                              ? snapshot.data!.length > 10
+                              ? '${snapshot.data!.substring(0, 10)}...'
+                              : snapshot.data!
+                              : 'No messages yet',
                           style: const TextStyle(
                             color: Colors.black,
                             fontSize: 18,
@@ -368,7 +392,11 @@ class ChatMessage extends StatelessWidget {
                     return Opacity(
                       opacity: 0.41,
                       child: Text(
-                        snapshot.data ?? 'No messages yet',
+                        snapshot.data != null
+                            ? snapshot.data!.length > 10
+                            ? '${snapshot.data!.substring(0, 10)}...'
+                            : snapshot.data!
+                            : 'No messages yet',
                         style: const TextStyle(
                           color: Colors.black,
                           fontSize: 8,

@@ -463,8 +463,8 @@ class FilterApplicationState extends State<FilterApplication> {
                       bFilm = selectedCountry.name;
                     }
 
-                    film = "$bFilm|${_sliderValues.end}|$selectedGender|${profession.text.trim()}|${_sliderValues.end}";
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=> MainLand(docID: docID, filters: film,)));
+                    film = "$bFilm|${_sliderValues.end}|$selectedGender|${profession.text.trim()}|${_sliderValues.start}";
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> MainLand(docID: docID, filters: film,)));
                   },
                   child: Image.asset("assets/icons/img_7.png", height: 30, fit: BoxFit.fitHeight,)
               ),
